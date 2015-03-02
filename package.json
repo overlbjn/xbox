@@ -1,0 +1,9 @@
+{
+  "name": "cloud-code-weixin",
+  "version": "0.0.1",
+  "description": "云代码微信接入示例",
+  "private": true,
+  "dependencies": {
+    "xml2js": "^0.4.4"
+  }
+}
