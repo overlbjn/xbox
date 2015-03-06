@@ -64,10 +64,10 @@ app.post('/weixin', function(req, res) {
   counter.set("name","asda");
   counter.save(null,{
   	success:function(counter){
-  		alert('success!');
+  		console.log('success');
   	},
   	error:function(sounter){
-  		alert('error');
+  		console.log('error');
   	}});
   weixin.exec(req.body, function(err, data) {
     if (err) {
