@@ -6,7 +6,6 @@ var Counter = AV.Object.extend('Counter');
 
 // 解析微信的 xml 数据
 var xmlBodyParser = function (req, res, next) {
-	console.log('1');
   if (req._body) return next();
   req.body = req.body || {};
 
@@ -60,18 +59,6 @@ app.get('/weixin', function(req, res) {
 })
 
 app.post('/weixin', function(req, res) {
-  console.log('2weixin req:', req.body.xml.Content);
-  var counter = new Counter();
-  var namestr = req.body.xml.Content.toString();
-  counter.set('name',namestr);
-  counter.save(null,{
-  	success:function(counter){
-  	console.log('success');
-  },
-  	error:function(counter,error){
-  		console.log('error:'+error);
-  	}
-  });
   weixin.exec(req.body, function(err, data) {
     if (err) {
       return res.send(err.code || 500, err.message);

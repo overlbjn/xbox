@@ -11,8 +11,11 @@ var debug = require('debug')('AV:weixin');
 exports.exec = function(params, cb) {
   if (params.signature) {
     checkSignature(params.signature, params.timestamp, params.nonce, params.echostr, cb);
-  } else {
-    receiveMessage(params, cb)
+  } else if(params.MsgId) {
+  	console.log('msg:'+params.MsgId);
+    receiveMessage(params, cb);
+  } else if(params.Event){
+  	console.log('event:'+params.Event);
   }
 }
 
