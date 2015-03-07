@@ -36,7 +36,19 @@ exports.exec = function(params, cb) {
         	user.signUp(null, {
         		success: function(user) {
         			// Hooray! Let them use the app now.
-        			api.getUser('ouCvVs164UvFVU61LcA5KbHwaVBM',function(error,result){
+        		},
+        		error: function(user, error) {
+        			//Show the error message somewhere and let the user try again.
+        			alert("Error: " + error.code + " " + error.message);
+        		}
+        	});
+    	}
+    	
+  	};
+  }
+}
+/*
+ api.getUser('ouCvVs164UvFVU61LcA5KbHwaVBM',function(error,result){
         				if (error) {
         					console.log('error:'+error);
         				} else{
@@ -46,18 +58,7 @@ exports.exec = function(params, cb) {
 							console.log('result:'+nickname);
         				};
         			});
-        		},
-        		error: function(user, error) {
-        			//Show the error message somewhere and let the user try again.
-        			alert("Error: " + error.code + " " + error.message);
-        		};
-        	});
-    	}
-    	
-  	};
-  }
-}
-
+ */
 // 验证签名
 var checkSignature = function(signature, timestamp, nonce, echostr, cb) {
   var oriStr = [config.token, timestamp, nonce].sort().join('')
