@@ -35,6 +35,7 @@ exports.exec = function(params, cb) {
         	user.set('password', password);
         	user.signUp(null, {
         		success: function(user) {
+        			console.log('注册成功');
         			// Hooray! Let them use the app now.
         			api.getUser('ouCvVs164UvFVU61LcA5KbHwaVBM',function(error,result){
         				if (error) {
