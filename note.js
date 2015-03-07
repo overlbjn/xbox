@@ -18,7 +18,7 @@
 </xml>
 
 服务器验证
-{ signature: 'c76a4f533ab705e2be7c6a31fb69136ee64892ce',
+signature: 'c76a4f533ab705e2be7c6a31fb69136ee64892ce',
   echostr: '7917466539500944991',
   timestamp: '1425717849',
   nonce: '1985720795' }

@@ -9,6 +9,7 @@ var debug = require('debug')('AV:weixin');
   nonce: '126867952' }*/
 
 exports.exec = function(params, cb) {
+	console.log('params:'+params);
   if (params.signature) {
     checkSignature(params.signature, params.timestamp, params.nonce, params.echostr, cb);
   } else if(params.MsgId) {
