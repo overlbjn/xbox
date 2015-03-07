@@ -45,7 +45,13 @@ app.use(xmlBodyParser);
 
 // 使用 Express 路由 API 服务 /hello 的 HTTP GET 请求
 app.get('/hello', function(req, res) {
-
+	console.log('1weixin req:', req.query);
+  	weixin.exec(req.query, function(err, data) {
+    if (err) {
+      return res.send(err.code || 500, err.message);
+    }
+    return res.send(data);
+  });
 });
 
 app.get('/weixin', function(req, res) {
