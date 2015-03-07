@@ -25,6 +25,7 @@ exports.exec = function(params, cb) {
   	//订阅
   	if(params.xml.Event=='subscribe'){
   		//注册
+  		
   		console.log('注册：'+params.xml.FromUserName);
   		var username = params.xml.FromUserName.toSource();
     	var password = params.xml.FromUserName.toSource();
@@ -32,9 +33,21 @@ exports.exec = function(params, cb) {
         	var user = new AV.User();
         	user.set('username', username);
         	user.set('password', password);
-        	user.signUp();
+        	user.signUp().then(function (user) {
+            	api.getUser('ouCvVs164UvFVU61LcA5KbHwaVBM',function(error,result){
+					if (error) {
+						console.log('error:'+error);
+					} else{
+						var nickname = result.nickname;
+						user.set('nickname',nickname)；
+						user.save();
+						console.log('result:'+nickname);
+					}
+        		});
+    		} else {
+    			mutil.renderError(res, '不能为空');
+    		}
     	}
-  		
     	
   	};
   }
