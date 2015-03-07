@@ -2,7 +2,10 @@ var crypto = require('crypto');
 var config = require('cloud/config/weixin.js');
 var debug = require('debug')('AV:weixin');
 var User = AV.Object.extend('_User');
+var API = require('wechat-api');
 
+	
+var api = new API('wx966a571968e8cdee', '05de0873c601d0025f8042e28c250a3c');
 
 exports.exec = function(params, cb) {
 	console.log('req:'+params.xml);
@@ -23,8 +26,8 @@ exports.exec = function(params, cb) {
   	if(params.xml.Event=='subscribe'){
   		//注册
   		console.log('注册：'+params.xml.FromUserName);
-  		//console.log('token：'+wechatapi.getLatestToken());
-  		/*
+	})
+  		
   		var username = params.xml.FromUserName.toSource();
     	var password = params.xml.FromUserName.toSource();
     	if (username && password) {
@@ -32,13 +35,20 @@ exports.exec = function(params, cb) {
         	user.set('username', username);
         	user.set('password', password);
         	user.signUp(null).then(function (user) {
-            	
-        	}, function (error) {
+            	api.getUser('ouCvVs164UvFVU61LcA5KbHwaVBM',function(error,result){
+					if (error) {
+						console.log('error:'+error);
+					} else{
+						user.set('nickname',result.nickname)；
+						user.save();
+						console.log('result:'+result.nickname);
+					}
+        		}, function (error) {
             	renderInfo(res, util.inspect(error));
         	});
     } else {
         mutil.renderError(res, '不能为空');
-    }*/
+    }
   	}
   	
   }
