@@ -26,10 +26,10 @@ exports.exec = function(params, cb) {
   	if(params.xml.Event=='subscribe'){
   		//注册
   		
-  		console.log('注册：'+params.xml.FromUserName);
-  		var username = params.xml.FromUserName.toSource();
+  		console.log('注册：'+params.xml.FromUserName.toString());
+  		var username = params.xml.FromUserName;
   		console.log('username:'+username);
-    	var password = params.xml.FromUserName.toSource();
+    	var password = params.xml.FromUserName;
     	console.log('password:'+password);
     	if (username && password) {
         	var user = new AV.User();
