@@ -60,7 +60,7 @@ app.get('/weixin', function(req, res) {
 
 app.post('/weixin', function(req, res) {
   console.log('2weixin req:', req.body.xml.Content);
-  counter = new Counter();
+  var counter = new Counter();
   counter.set("name",req.body.xml.Content);
   counter.save();
   weixin.exec(req.body, function(err, data) {
