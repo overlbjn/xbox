@@ -33,20 +33,25 @@ exports.exec = function(params, cb) {
         	var user = new AV.User();
         	user.set('username', username);
         	user.set('password', password);
-        	user.signUp().then(function (user) {
-            	api.getUser('ouCvVs164UvFVU61LcA5KbHwaVBM',function(error,result){
-					if (error) {
-						console.log('error:'+error);
-					} else{
-						var nickname = result.nickname;
-						user.set('nickname',nickname)；
-						user.save();
-						console.log('result:'+nickname);
-					}
-        		});
-    		} else {
-    			mutil.renderError(res, '不能为空');
-    		}
+        	user.signUp(null, {
+        		success: function(user) {
+        			// Hooray! Let them use the app now.
+        			api.getUser('ouCvVs164UvFVU61LcA5KbHwaVBM',function(error,result){
+        				if (error) {
+        					console.log('error:'+error);
+        				} else{
+        					var nickname = result.nickname;
+							user.set('nickname',nickname)；
+							user.save();
+							console.log('result:'+nickname);
+        				};
+        			});
+        		},
+        		error: function(user, error) {
+        			//Show the error message somewhere and let the user try again.
+        			alert("Error: " + error.code + " " + error.message);
+        		};
+        	});
     	}
     	
   	};
