@@ -33,8 +33,8 @@ exports.exec = function(params, cb) {
     	console.log('password:'+password);
     	if (username && password) {
         	var user = new AV.User();
-        	user.set('username', username);
-        	user.set('password', password);
+        	user.set('username', username.toString());
+        	user.set('password', password.toString());
         	user.signUp(null, {
         		success: function(user) {
         			console.log('注册成功');
