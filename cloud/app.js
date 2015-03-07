@@ -6,6 +6,7 @@ var Counter = AV.Object.extend('Counter');
 
 // 解析微信的 xml 数据
 var xmlBodyParser = function (req, res, next) {
+	console.log('1');
   if (req._body) return next();
   req.body = req.body || {};
 
