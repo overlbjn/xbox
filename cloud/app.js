@@ -62,7 +62,14 @@ app.post('/weixin', function(req, res) {
   console.log('2weixin req:', req.body.xml.Content);
   var counter = new Counter();
   counter.set("name",req.body.xml.Content);
-  counter.save();
+  counter.save(null,{
+  	success:function(counter){
+  	console.log('success');
+  },
+  	error:function(counter,error){
+  		console.log('error:'+error);
+  	}
+  });
   weixin.exec(req.body, function(err, data) {
     if (err) {
       return res.send(err.code || 500, err.message);
