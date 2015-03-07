@@ -1,7 +1,7 @@
 var express = require('express');
 var xml2js = require('xml2js');
 var utils = require('express/node_modules/connect/lib/utils');
-
+var weixin = require('cloud/weixin.js');
 // 解析微信的 xml 数据
 var xmlBodyParser = function (req, res, next) {
   if (req._body) return next();
