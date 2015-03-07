@@ -2,11 +2,20 @@ var crypto = require('crypto');
 var config = require('cloud/config/weixin.js');
 var debug = require('debug')('AV:weixin');
 var User = AV.Object.extend('_User');
-/*1weixin req: { 
-  signature: '48c90298121b9d8875623b2656f9e0175bee4d3f',
-  echostr: '7674587388177211231',
-  timestamp: '1425706079',
-  nonce: '126867952' }*/
+var WechatAPI = require('wechat-api');
+
+var wechatapi = new WechatAPI('wx966a571968e8cdee', '05de0873c601d0025f8042e28c250a3c', function (callback) {
+  // 传入一个获取全局token的方法
+  console.log('wetoken');
+  fs.readFile('access_token.txt', 'utf8', function (err, txt) {
+    if (err) {return callback(err);}
+    callback(null, JSON.parse(txt));
+  });
+}, function (token, callback) {
+  // 请将token存储到全局，跨进程、跨机器级别的全局，比如写到数据库、redis等
+  // 这样才能在cluster模式及多机情况下使用，以下为写入到文件的示例
+  fs.writeFile('access_token.txt', JSON.stringify(token), callback);
+});
 
 exports.exec = function(params, cb) {
 	console.log('req:'+params.xml);
@@ -27,6 +36,22 @@ exports.exec = function(params, cb) {
   	if(params.xml.Event=='subscribe'){
   		//注册
   		console.log('注册：'+params.xml.FromUserName);
+  		console.log('token：'+wechatapi.getLatestToken());
+  		/*
+  		var username = params.xml.FromUserName.toSource();
+    	var password = params.xml.FromUserName.toSource();
+    	if (username && password) {
+        	var user = new AV.User();
+        	user.set('username', username);
+        	user.set('password', password);
+        	user.signUp(null).then(function (user) {
+            	
+        	}, function (error) {
+            	renderInfo(res, util.inspect(error));
+        	});
+    } else {
+        mutil.renderError(res, '不能为空');
+    }*/
   	}
   	
   }
@@ -59,3 +84,5 @@ var receiveMessage = function(msg, cb) {
   }
   cb(null, result);
 }
+
+//获取用户资料
