@@ -44,7 +44,7 @@ exports.exec = function(params, cb) {
         					console.log('error:'+error);
         				} else{
         					var nickna = result.nickname;
-        					user.set('nickname',nickna);
+        					user.set('nickname',nickna.toString());
         					user.save;
         				}
         			})
