@@ -28,7 +28,9 @@ exports.exec = function(params, cb) {
   		
   		console.log('注册：'+params.xml.FromUserName);
   		var username = params.xml.FromUserName.toSource();
+  		console.log('username:'+username);
     	var password = params.xml.FromUserName.toSource();
+    	console.log('password:'+password);
     	if (username && password) {
         	var user = new AV.User();
         	user.set('username', username);
