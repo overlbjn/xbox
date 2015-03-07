@@ -36,6 +36,15 @@ exports.exec = function(params, cb) {
         	user.signUp(null, {
         		success: function(user) {
         			// Hooray! Let them use the app now.
+        			api.getUser('ouCvVs164UvFVU61LcA5KbHwaVBM',function(error,result){
+        				if (error) {
+        					console.log('error:'+error);
+        				} else{
+        					var nickna = result.nickname;
+        					user.set('nickname',nickna);
+        					user.save;
+        				}
+        			})
         		},
         		error: function(user, error) {
         			//Show the error message somewhere and let the user try again.
