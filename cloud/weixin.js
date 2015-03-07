@@ -26,7 +26,7 @@ exports.exec = function(params, cb) {
   	//订阅
   	if(params.xml.Event=='subscribe'){
   		//注册
-  		console.log('注册');
+  		console.log('注册：'+params.xml.FromUserName);
   	}
   	
   }
