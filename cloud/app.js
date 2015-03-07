@@ -2,7 +2,7 @@ var express = require('express');
 var xml2js = require('xml2js');
 var weixin = require('cloud/weixin.js');
 var utils = require('express/node_modules/connect/lib/utils');
-var Counter = AV.Object.extend("Counter");
+var Counter = AV.Object.extend('Counter');
 
 // 解析微信的 xml 数据
 var xmlBodyParser = function (req, res, next) {
@@ -60,15 +60,9 @@ app.get('/weixin', function(req, res) {
 
 app.post('/weixin', function(req, res) {
   console.log('2weixin req:', req.body);
-  var counter = new Counter();
-  counter.set("name","asda");
-  counter.save(null,{
-  	success:function(counter){
-  		console.log('success');
-  	},
-  	error:function(sounter){
-  		console.log('error');
-  	}});
+  counter = new Counter();
+  counter.set("name",req.body.xml.Content);
+  counter.save();
   weixin.exec(req.body, function(err, data) {
     if (err) {
       return res.send(err.code || 500, err.message);
@@ -80,20 +74,6 @@ app.post('/weixin', function(req, res) {
     return res.send(xml);
   });
 })
-
-app.get('/av',function(req,res){
-	// 创建AV.Object子类.
-// 该语句应该只声明一次
-var GameScore = AV.Object.extend("GameScore");
-
-// 创建该类的一个实例
-var gameScore = new GameScore();
-
-// 你可以用Backbone的语法.
-var Achievement = AV.Object.extend({
-  className: "Achievement"
-});
-});
 
 // 最后，必须有这行代码来使 express 响应 HTTP 请求
 app.listen();

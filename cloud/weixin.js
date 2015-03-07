@@ -2,6 +2,12 @@ var crypto = require('crypto');
 var config = require('cloud/config/weixin.js');
 var debug = require('debug')('AV:weixin');
 
+/*1weixin req: { 
+  signature: '48c90298121b9d8875623b2656f9e0175bee4d3f',
+  echostr: '7674587388177211231',
+  timestamp: '1425706079',
+  nonce: '126867952' }*/
+
 exports.exec = function(params, cb) {
   if (params.signature) {
     checkSignature(params.signature, params.timestamp, params.nonce, params.echostr, cb);
