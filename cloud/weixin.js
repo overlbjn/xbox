@@ -48,7 +48,8 @@ exports.exec = function(params, cb) {
     			mutil.renderError(res, '不能为空');
     		}
     	}*/
-  	}
+  	};
+  }
 }
 
 // 验证签名
