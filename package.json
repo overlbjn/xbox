@@ -4,6 +4,7 @@
   "description": "云代码微信接入示例",
   "private": true,
   "dependencies": {
+    "wechat-api": "^1.6.0",
     "xml2js": "^0.4.4"
   }
 }
