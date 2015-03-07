@@ -49,7 +49,7 @@ exports.exec = function(params, cb) {
         		},
         		error: function(user, error) {
         			//Show the error message somewhere and let the user try again.
-        			alert("Error: " + error.code + " " + error.message);
+        			console.log('user error:'+error.code+error.message);
         		}
         	});
     	}
