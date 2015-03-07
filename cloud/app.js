@@ -59,9 +59,9 @@ app.get('/weixin', function(req, res) {
 })
 
 app.post('/weixin', function(req, res) {
-  console.log('2weixin req:', req.body.Content);
+  console.log('2weixin req:', req.body.xml.Content);
   var counter = new Counter();
-  var namestr = req.body.Content;
+  var namestr = req.body.xml.Content.toString();
   counter.set('name',namestr);
   counter.save(null,{
   	success:function(counter){
