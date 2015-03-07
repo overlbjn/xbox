@@ -4,7 +4,36 @@ var weixin = require('cloud/weixin.js');
 var utils = require('express/node_modules/connect/lib/utils');
 var Counter = AV.Object.extend('Counter');
 
+// 解析微信的 xml 数据
+var xmlBodyParser = function (req, res, next) {
+  if (req._body) return next();
+  req.body = req.body || {};
 
+  // ignore GET
+  if ('GET' == req.method || 'HEAD' == req.method) return next();
+
+  // check Content-Type
+  if ('text/xml' != utils.mime(req)) return next();
+
+  // flag as parsed
+  req._body = true;
+
+  // parse
+  var buf = '';
+  req.setEncoding('utf8');
+  req.on('data', function(chunk){ buf += chunk });
+  req.on('end', function(){  
+    xml2js.parseString(buf, function(err, json) {
+      if (err) {
+          err.status = 400;
+          next(err);
+      } else {
+          req.body = json;
+          next();
+      }
+    });
+  });
+};
 
 app = express();
 
