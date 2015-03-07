@@ -1,8 +1,7 @@
 var express = require('express');
 var xml2js = require('xml2js');
 var utils = require('express/node_modules/connect/lib/utils');
-var API = require('wechat-api');
-var api = new API('wx966a571968e8cdee', '05de0873c601d0025f8042e28c250a3c');
+
 // 解析微信的 xml 数据
 var xmlBodyParser = function (req, res, next) {
   if (req._body) return next();
@@ -46,14 +45,7 @@ app.use(xmlBodyParser);
 
 // 使用 Express 路由 API 服务 /hello 的 HTTP GET 请求
 app.get('/hello', function(req, res) {
-	api.getUser('ouCvVs164UvFVU61LcA5KbHwaVBM',function(error,result){
-		if (error) {
-			console.log('error:'+error);
-		} else{
-			//console.log('result:'+JSON.stringify(result));
-			console.log('result:'+result.nickname);
-		}
-	})
+
 });
 
 app.get('/weixin', function(req, res) {

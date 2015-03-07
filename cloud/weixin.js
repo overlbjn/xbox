@@ -4,11 +4,10 @@ var debug = require('debug')('AV:weixin');
 var User = AV.Object.extend('_User');
 var API = require('wechat-api');
 
-	
 var api = new API('wx966a571968e8cdee', '05de0873c601d0025f8042e28c250a3c');
 
 exports.exec = function(params, cb) {
-	console.log('req:'+params.xml);
+	console.log('req:'+params);
   if (params.signature) {
   	//服务器验证
     checkSignature(params.signature, params.timestamp, params.nonce, params.echostr, cb);
@@ -27,7 +26,7 @@ exports.exec = function(params, cb) {
   		//注册
   		console.log('注册：'+params.xml.FromUserName);
 	})
-  		
+  		/*
   		var username = params.xml.FromUserName.toSource();
     	var password = params.xml.FromUserName.toSource();
     	if (username && password) {
@@ -49,7 +48,7 @@ exports.exec = function(params, cb) {
     } else {
         mutil.renderError(res, '不能为空');
     }
-  	}
+  	}*/
   	
   }
 }
