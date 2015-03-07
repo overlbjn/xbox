@@ -13,10 +13,10 @@ exports.exec = function(params, cb) {
   if (params.signature) {
     checkSignature(params.signature, params.timestamp, params.nonce, params.echostr, cb);
   } else if(params.xml.MsgId) {
-  	console.log('msg:'+params.MsgId);
+  	console.log('msg:'+params.xml.MsgId);
     receiveMessage(params, cb);
   } else if(params.xml.Event){
-  	console.log('event:'+params.Event);
+  	console.log('event:'+params.xml.Event);
   }
 }
 
