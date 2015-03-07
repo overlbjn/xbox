@@ -3,10 +3,12 @@ var config = require('cloud/config/weixin.js');
 var debug = require('debug')('AV:weixin');
 var User = AV.Object.extend('_User');
 var WechatAPI = require('wechat-api');
+var fs = require('fs')
 
 var wechatapi = new WechatAPI('wx966a571968e8cdee', '05de0873c601d0025f8042e28c250a3c', function (callback) {
   // 传入一个获取全局token的方法
   console.log('wetoken');
+  console.log('token：'+wechatapi.getLatestToken());
   fs.readFile('access_token.txt', 'utf8', function (err, txt) {
     if (err) {return callback(err);}
     callback(null, JSON.parse(txt));
