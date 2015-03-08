@@ -82,15 +82,7 @@ exports.exec = function(params, cb) {
   			});
   		}else if (params.xml.EventKey=='LINKUANDME') {
   			console.log('click = ',params.xml.EventKey);
-  			var result = {
-  				xml: {
-  					ToUserName:params.xml.FromUserName.toString(),
-  					FromUserName:params.xml.ToUserName.toString(),
-  					CreateTime: new Date().getTime(),
-  					MsgType: 'text',
-  					Content: '你好，你发的\n内容是「」。'
-  					}
-  				}
+  			receiveMessage(params,'功能飞行中...',cb);
   			cb(null,result);
   		}
   	}
@@ -135,13 +127,13 @@ var checkSignature = function(signature, timestamp, nonce, echostr, cb) {
 // 接收普通消息
 var receiveMessage = function(msg,msgContent, cb) {
   var result = {
-    
-      ToUserName: msg.xml.FromUserName[0],
-      FromUserName: '' + msg.xml.ToUserName + '',
-      CreateTime: new Date().getTime(),
-      MsgType: 'text',
-      Content: msgContent
-    
+  	
+  	ToUserName: msg.xml.FromUserName[0],
+  	FromUserName: '' + msg.xml.ToUserName + '',
+  	CreateTime: new Date().getTime(),
+  	MsgType: 'text',
+  	Content: msgContent
+  	
   }
   cb(null, result);
 }
