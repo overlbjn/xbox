@@ -109,7 +109,7 @@ app.post('/weixin', function(req, res) {
       return res.send(err.code || 500, err.message);
     }
     var xml = js2xmlparser('xml',data);
-    console.log('res:', data)
+    console.log('res:', xml)
     res.set('Content-Type', 'text/xml');
     return res.send(xml);
   });

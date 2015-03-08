@@ -141,7 +141,6 @@ var receiveMessage = function(msg,msgContent, cb) {
       CreateTime: new Date().getTime(),
       MsgType: 'text',
       Content: msgContent
-      //Content: '你好，你发的内容是「' + msg.xml.Content + '」。'
     }
   }
   cb(null, result);
