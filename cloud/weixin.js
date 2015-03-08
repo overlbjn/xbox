@@ -22,7 +22,7 @@ exports.exec = function(params, cb) {
   } else if(params.xml.Event){
   	//事件处理
   	console.log('event:'+params.xml.Event);
-  	cb();
+  	
   	//订阅
   	if(params.xml.Event=='subscribe'){
   		//注册
@@ -48,6 +48,7 @@ exports.exec = function(params, cb) {
   								var msgtext = nickname+' 欢迎回来!';
   								api.sendText(params.xml.FromUserName.toString(),msgtext,function(error,result){
   									console.log('sendtext_error:'+error+'sendtext_result:'+result);
+  									cb();
   								})
   							}
   						}
