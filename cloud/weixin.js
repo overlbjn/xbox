@@ -16,7 +16,8 @@ exports.exec = function(params, cb) {
   	
   	console.log('msg:'+params.xml.MsgId);
   	//消息处理
-    receiveMessage(params, cb);
+  	var msgStr = '你好，你发的内容是「' + msg.xml.Content + '」。';
+    receiveMessage(params,msgStr, cb);
     
   } else if(params.xml.Event){
   	//事件处理
@@ -48,11 +49,7 @@ exports.exec = function(params, cb) {
   						success:function(user){
   							console.log('注册成功');
   							var msgtext = '欢迎新用户'+nickname;
-  								api.sendText(params.xml.FromUserName.toString(),msgtext,function(error,result){
-  									console.log('sendtext_error:'+error+'sendtext_result:'+result);
-  									cb(error,result);
-  								})
-  								cb(error,result);
+  							receiveMessage(params,msgtext,cb);
   						},
   						error:function(user,error){
   							console.log('user error:'+error.code+error.message);
@@ -80,16 +77,7 @@ exports.exec = function(params, cb) {
   				success: function(user) {
   					console.log('登录成功！');
   					var msgtext = '姓名：'+user.get('nickname')+'\n性别：'+sexout(user.get('sex'))+'\n国家：'+user.get('country')+'\n省份：'+user.get('province')+'\n城市：'+user.get('city')+'\n语言：'+languageout(user.get('language'))+'\n头像：'+user.get('headimgurl');
-  					var result = {
-  						xml: {
-  							ToUserName: params.xml.FromUserName.toString(),
-  							FromUserName: params.xml.ToUserName.toString(),
-  							CreateTime: new Date().getTime(),
-  							MsgType: 'text',
-  							Content: msgtext
-  							}
-  						}
-  			cb(null,result);	
+  					receiveMessage(params,msgtext,cb);	
   				},error: function(user, err) {
   					console.log('登录失败！');
   					cb(err);
@@ -148,14 +136,15 @@ var checkSignature = function(signature, timestamp, nonce, echostr, cb) {
 }
 
 // 接收普通消息
-var receiveMessage = function(msg, cb) {
+var receiveMessage = function(msg,msgContent, cb) {
   var result = {
     xml: {
       ToUserName: msg.xml.FromUserName[0],
       FromUserName: '' + msg.xml.ToUserName + '',
       CreateTime: new Date().getTime(),
       MsgType: 'text',
-      Content: '你好，你发的内容是「' + msg.xml.Content + '」。'
+      Content: msgContent
+      //Content: '你好，你发的内容是「' + msg.xml.Content + '」。'
     }
   }
   cb(null, result);
