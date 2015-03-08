@@ -82,7 +82,7 @@ exports.exec = function(params, cb) {
   					var msgtext = '姓名：'+user.get('nickname')+' 性别：'+user.get('sex')+' 国家：'+user.get('country')+' 省份：'+user.get('province')+' 城市：'+user.get('city')+' 语言：'+user.get('language')+' 头像：'+user.get('headimgurl');
   					api.sendText(params.xml.FromUserName.toString(),msgtext,function(error,result){
   									console.log('sendtext_error:'+error+'sendtext_result:'+result);
-  									cb(error,result);
+  									cb(error,'');
   								})
   				},error: function(user, error) {
   					console.log('登录失败！');
