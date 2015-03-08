@@ -82,8 +82,8 @@ exports.exec = function(params, cb) {
   					var msgtext = '姓名：'+user.get('nickname')+' 性别：'+user.get('sex')+' 国家：'+user.get('country')+' 省份：'+user.get('province')+' 城市：'+user.get('city')+' 语言：'+user.get('language')+' 头像：'+user.get('headimgurl');
   					var result = {
   						xml: {
-  							ToUserName: params.xml.FromUserName[0],
-  							FromUserName: '' + msg.xml.ToUserName + '',
+  							ToUserName: params.xml.FromUserName.toString(),
+  							FromUserName: params.xml.ToUserName.toString(),
   							CreateTime: new Date().getTime(),
   							MsgType: 'text',
   							Content: msgtext
@@ -99,8 +99,8 @@ exports.exec = function(params, cb) {
   			console.log('click = ',params.xml.EventKey);
   			var result = {
   				xml: {
-  					ToUserName: params.xml.FromUserName[0],
-  					FromUserName: '' + msg.xml.ToUserName + '',
+  					ToUserName:params.xml.FromUserName.toString(),
+  					FromUserName:params.xml.ToUserName.toString(),
   					CreateTime: new Date().getTime(),
   					MsgType: 'text',
   					Content: '你好，你发的内容是「」。'
