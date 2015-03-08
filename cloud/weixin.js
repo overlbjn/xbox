@@ -22,6 +22,7 @@ exports.exec = function(params, cb) {
   } else if(params.xml.Event){
   	//事件处理
   	console.log('event:'+params.xml.Event);
+  	cb();
   	//订阅
   	if(params.xml.Event=='subscribe'){
   		//注册
