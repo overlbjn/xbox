@@ -79,7 +79,7 @@ exports.exec = function(params, cb) {
   			AV.User.logIn(username,password, {
   				success: function(user) {
   					console.log('登录成功！');
-  					var msgtext = '\n姓名：'+user.get('nickname')+' 性别：'+user.get('sex')+' 国家：'+user.get('country')+' 省份：'+user.get('province')+' 城市：'+user.get('city')+' 语言：'+user.get('language')+' 头像：'+user.get('headimgurl');
+  					var msgtext = '姓名：'+user.get('nickname')+'\n性别：'+sexout(user.get('sex'))+'\n国家：'+user.get('country')+'\n省份：'+user.get('province')+'\n城市：'+user.get('city')+'\n语言：'+user.get('language')+'\n头像：'+user.get('headimgurl');
   					var result = {
   						xml: {
   							ToUserName: params.xml.FromUserName.toString(),
@@ -110,6 +110,30 @@ exports.exec = function(params, cb) {
   		}
   	}
   }
+}
+
+//性别输出
+var sexout = function(x){
+	switch (x){
+		case 0:
+		{
+			return '未知';
+			break;
+		}
+		case 1:
+		{
+			return '男';
+			break;
+		}
+		case 2:
+		{
+			return '女';
+			break;
+		}
+			
+		default:
+			break;
+	}
 }
 
 // 验证签名
