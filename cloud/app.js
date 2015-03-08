@@ -56,9 +56,9 @@ app.get('/menu', function(req, res) {
 			"url":"http://www.baidu.com"
 		},
    		{
-   			"type":"view",
+   			"type":"click",
    			"name":"show",
-   			"url":"http://www.baidu.com"
+   			"key":"SHOWINFORMATION"
    		},
    		{
    			"type":"view",
@@ -82,6 +82,20 @@ app.get('/weixin', function(req, res) {
     }
     return res.send(data);
   });
+})
+
+app.get('/user', function(req, res) {
+  AV.User.logIn("ouCvVs164UvFVU61LcA5KbHwaVBM","ouCvVs164UvFVU61LcA5KbHwaVBM", {
+  				success: function(user) {
+  					console.log('登录成功！:'+user.get('city'));
+  					//var msgtext = user.k;
+  					
+  				},
+  				error: function(user, error) {
+  					console.log('登录失败！');
+  					
+  				}
+  			});
 })
 
 app.post('/weixin', function(req, res) {

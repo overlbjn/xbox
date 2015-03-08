@@ -4,7 +4,6 @@ var debug = require('debug')('AV:weixin');
 var User = AV.Object.extend('_User');
 
 var API = require('wechat-api');
-
 var api = new API('wx966a571968e8cdee', '05de0873c601d0025f8042e28c250a3c');
 
 exports.exec = function(params, cb) {
@@ -71,6 +70,26 @@ exports.exec = function(params, cb) {
   		})
   	}else if(params.xml.Event=='unsubscribe'){
   		cb(null,'');
+  	}else if (params.xml.Event=='CLICK') {
+  		if (params.xml.EventKey==SHOWINFORMATION) {
+  			var username = params.xml.FromUserName.toString();
+  			var password = params.xml.FromUserNametoString();
+  			AV.User.logIn(username,password, {
+  				success: function(user) {
+  					console.log('登录成功！');
+  					var msgtext = user.get('nickname')+user.get('sex')+user.get('country')+user.get('province')+user.get('city')+user.get('language')+'头像：'+user.get('headimgurl ');
+  					api.sendText(params.xml.FromUserName.toString(),msgtext,function(error,result){
+  									console.log('sendtext_error:'+error+'sendtext_result:'+result);
+  									cb(error,result);
+  								})
+  								cb(error,result);
+  				},
+  				error: function(user, error) {
+  					console.log('登录失败！');
+  					cb(error);
+  				}
+  			});
+  		}
   	}
   }
 }
