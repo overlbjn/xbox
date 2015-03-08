@@ -71,6 +71,7 @@ exports.exec = function(params, cb) {
   	}else if(params.xml.Event=='unsubscribe'){
   		cb(null,'');
   	}else if (params.xml.Event=='CLICK') {
+  		console.log('click = ',params.xml.EventKey);
   		if (params.xml.EventKey==SHOWINFORMATION) {
   			var username = params.xml.FromUserName.toString();
   			var password = params.xml.FromUserNametoString();
@@ -90,6 +91,8 @@ exports.exec = function(params, cb) {
   				}
   			});
   		}
+  	}else{
+  		cb(null,'');
   	}
   }
 }
