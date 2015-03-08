@@ -2,6 +2,7 @@ var express = require('express');
 var xml2js = require('xml2js');
 var utils = require('express/node_modules/connect/lib/utils');
 var weixin = require('cloud/weixin.js');
+var js2xmlparser = require("js2xmlparser");
 
 
 // 解析微信的 xml 数据
@@ -85,17 +86,21 @@ app.get('/weixin', function(req, res) {
 })
 
 app.get('/user', function(req, res) {
-  AV.User.logIn("ouCvVs164UvFVU61LcA5KbHwaVBM","ouCvVs164UvFVU61LcA5KbHwaVBM", {
-  				success: function(user) {
-  					console.log('登录成功！:'+user.get('city'));
-  					//var msgtext = user.k;
-  					
-  				},
-  				error: function(user, error) {
-  					console.log('登录失败！');
-  					
-  				}
-  			});
+  	var API = require('wechat-api');
+	var api = new API('wx966a571968e8cdee', '05de0873c601d0025f8042e28c250a3c');
+	//ouCvVs4z85LHY7GLQidA_ILJdpKc ouCvVs164UvFVU61LcA5KbHwaVBM ouCvVs_M1ghMQUWLRDzI7FGKsnVE
+	api.getUser("ouCvVs164UvFVU61LcA5KbHwaVBM",function(error,result){
+		console.log("user:"+result.nickname);
+		//var builder = new xml2js.Builder();
+		var resu = {
+    		xml: {
+    			Content: result.nickname
+    			}
+    		}
+    	//var xml = builder.buildObject(resu);
+    	var xml = js2xmlparser('xml',resu);
+    	console.log('res:', resu)
+   })
 })
 
 app.post('/weixin', function(req, res) {
@@ -103,8 +108,7 @@ app.post('/weixin', function(req, res) {
     if (err) {
       return res.send(err.code || 500, err.message);
     }
-    var builder = new xml2js.Builder();
-    var xml = builder.buildObject(data);
+    var xml = js2xmlparser('xml',data);
     console.log('res:', data)
     res.set('Content-Type', 'text/xml');
     return res.send(xml);
