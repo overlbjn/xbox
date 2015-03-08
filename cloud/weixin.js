@@ -37,7 +37,7 @@ exports.exec = function(params, cb) {
   					var user = new AV.User();
   					user.set('username', username.toString());
   					user.set('password', password.toString());
-  					user.sign(null,{
+  					user.signUp(null,{
   						success:function(user){
   							console.log('注册成功');
   						},
