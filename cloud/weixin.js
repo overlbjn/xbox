@@ -41,6 +41,12 @@ exports.exec = function(params, cb) {
   					user.signUp(null,{
   						success:function(user){
   							console.log('注册成功');
+  							var msgtext = '欢迎新用户'+nickname;
+  								api.sendText(params.xml.FromUserName.toString(),msgtext,function(error,result){
+  									console.log('sendtext_error:'+error+'sendtext_result:'+result);
+  									cb(error,result);
+  								})
+  								cb(error,result);
   						},
   						error:function(user,error){
   							console.log('user error:'+error.code+error.message);
