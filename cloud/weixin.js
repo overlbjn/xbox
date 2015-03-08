@@ -79,7 +79,7 @@ exports.exec = function(params, cb) {
   			AV.User.logIn(username,password, {
   				success: function(user) {
   					console.log('登录成功！');
-  					var msgtext = '姓名：'+user.get('nickname')+' 性别：'+user.get('sex')+' 国家：'+user.get('country')+' 省份：'+user.get('province')+' 城市：'+user.get('city')+' 语言：'+user.get('language')+' 头像：'+user.get('headimgurl');
+  					var msgtext = '姓名：'+user.get('nickname')+' 性别：'+user.get('sex')+' 国家：'+user.get('country')+' 省份：'+user.get('province')+' 城市：'+user.get('city')+' 语言：'+user.get('language');
   					api.sendText(params.xml.FromUserName.toString(),msgtext,function(error,result){
   									console.log('sendtext_error:'+error+'sendtext_result:'+result);	
   									cb(null,result);
