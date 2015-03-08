@@ -32,11 +32,13 @@ exports.exec = function(params, cb) {
   				var username = params.xml.FromUserName;
   				console.log('username:'+username);
   				var password = params.xml.FromUserName;
+  				var nickname = result.nickname;
   				console.log('password:'+password);
   				if(username && password){
   					var user = new AV.User();
   					user.set('username', username.toString());
   					user.set('password', password.toString());
+  					user.set('nickname', nickname.toString());
   					user.signUp(null,{
   						success:function(user){
   							console.log('注册成功');
