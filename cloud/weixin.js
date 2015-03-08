@@ -72,9 +72,10 @@ exports.exec = function(params, cb) {
   		cb(null,'');
   	}else if (params.xml.Event=='CLICK') {
   		console.log('click = ',params.xml.EventKey);
-  		if (params.xml.EventKey=="SHOWINFORMATION") {
+  		if (params.xml.EventKey=='SHOWINFORMATION') {
+  			console.log('开始登录...');
   			var username = params.xml.FromUserName.toString();
-  			var password = params.xml.FromUserNametoString();
+  			var password = params.xml.FromUserName.toString();
   			AV.User.logIn(username,password, {
   				success: function(user) {
   					console.log('登录成功！');
