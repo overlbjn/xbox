@@ -79,7 +79,7 @@ exports.exec = function(params, cb) {
   			AV.User.logIn(username,password, {
   				success: function(user) {
   					console.log('登录成功！');
-  					var msgtext = '姓名：'+user.get('nickname')+' 性别：'+user.get('sex')+' 国家：'+user.get('country')+' 省份：'+user.get('province')+' 城市：'+user.get('city')+' 语言：'+user.get('language')+' 头像：'+user.get('headimgurl');
+  					var msgtext = '\n姓名：'+user.get('nickname')+' 性别：'+user.get('sex')+' 国家：'+user.get('country')+' 省份：'+user.get('province')+' 城市：'+user.get('city')+' 语言：'+user.get('language')+' 头像：'+user.get('headimgurl');
   					var result = {
   						xml: {
   							ToUserName: params.xml.FromUserName.toString(),
@@ -103,7 +103,7 @@ exports.exec = function(params, cb) {
   					FromUserName:params.xml.ToUserName.toString(),
   					CreateTime: new Date().getTime(),
   					MsgType: 'text',
-  					Content: '你好，你发的内容是「」。'
+  					Content: '你好，你发的\n内容是「」。'
   					}
   				}
   			cb(null,result);
