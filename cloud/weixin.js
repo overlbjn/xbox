@@ -48,7 +48,7 @@ exports.exec = function(params, cb) {
   								var msgtext = nickname+' 欢迎回来!';
   								api.sendText(params.xml.FromUserName.toString(),msgtext,function(error,result){
   									console.log('sendtext_error:'+error+'sendtext_result:'+result);
-  									cb();
+  									cb(error,result);
   								})
   							}
   						}
@@ -56,7 +56,9 @@ exports.exec = function(params, cb) {
   				}
   			}
   		})
-  	};
+  	}else if(params.xml.Event=='unsubscribe'){
+  		cb(null,'');
+  	}
   }
 }
 /*
