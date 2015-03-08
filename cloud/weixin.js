@@ -45,7 +45,7 @@ exports.exec = function(params, cb) {
   							console.log('user error:'+error.code+error.message);
   							if (error.code==202) {
   								var msgtext = nickname+' 欢迎回来!';
-  								api.sendText(username,msgtext,function(error,result){
+  								api.sendText(params.xml.FromUserName,msgtext,function(error,result){
   									console.log('sendtext_error:'+error+'sendtext_result:'+result);
   								})
   							}
