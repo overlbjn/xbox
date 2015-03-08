@@ -79,7 +79,7 @@ exports.exec = function(params, cb) {
   			AV.User.logIn(username,password, {
   				success: function(user) {
   					console.log('登录成功！');
-  					var msgtext = '姓名：'+user.get('nickname')+'\n性别：'+sexout(user.get('sex'))+'\n国家：'+user.get('country')+'\n省份：'+user.get('province')+'\n城市：'+user.get('city')+'\n语言：'+user.get('language')+'\n头像：'+user.get('headimgurl');
+  					var msgtext = '姓名：'+user.get('nickname')+'\n性别：'+sexout(user.get('sex'))+'\n国家：'+user.get('country')+'\n省份：'+user.get('province')+'\n城市：'+user.get('city')+'\n语言：'+languageout(user.get('language'))+'\n头像：'+user.get('headimgurl');
   					var result = {
   						xml: {
   							ToUserName: params.xml.FromUserName.toString(),
@@ -112,6 +112,15 @@ exports.exec = function(params, cb) {
   }
 }
 
+//语言输出
+var languageout = function(x){
+	var language = x.toString();
+	if (language=='zh_CN') {
+		return '简体中文';
+	}else{
+		return '未知';
+	}
+}
 //性别输出
 var sexout = function(x){
 	var sex = x.toString();
