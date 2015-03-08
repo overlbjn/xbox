@@ -74,13 +74,6 @@ exports.exec = function(params, cb) {
   		console.log('click = ',params.xml.EventKey);
   		if (params.xml.EventKey=='SHOWINFORMATION') {
   			console.log('开始登录...');
-  			var result = {
-  				xml: {
-  					Content: 'OK'
-  					}
-  				}
-  			cb(null,result);
-  			/*
   			var username = params.xml.FromUserName.toString();
   			var password = params.xml.FromUserName.toString();
   			AV.User.logIn(username,password, {
@@ -89,30 +82,18 @@ exports.exec = function(params, cb) {
   					var msgtext = '姓名：'+user.get('nickname')+' 性别：'+user.get('sex')+' 国家：'+user.get('country')+' 省份：'+user.get('province')+' 城市：'+user.get('city')+' 语言：'+user.get('language')+' 头像：'+user.get('headimgurl');
   					api.sendText(params.xml.FromUserName.toString(),msgtext,function(error,result){
   									console.log('sendtext_error:'+error+'sendtext_result:'+result);	
-  									cb(error,result);
-  								})
-  					cb(null,'');		
-  				},error: function(user, error) {
+  									cb(null,result);
+  								})		
+  				},error: function(user, err) {
   					console.log('登录失败！');
-  					cb(error);
+  					cb(err);
   				}
-  			});*/
+  			});
   		}
   	}
   }
 }
-/*
- api.getUser('ouCvVs164UvFVU61LcA5KbHwaVBM',function(error,result){
-        				if (error) {
-        					console.log('error:'+error);
-        				} else{
-        					var nickname = result.nickname;
-							user.set('nickname',nickname)；
-							user.save();
-							console.log('result:'+nickname);
-        				};
-        			});
- */
+
 // 验证签名
 var checkSignature = function(signature, timestamp, nonce, echostr, cb) {
   var oriStr = [config.token, timestamp, nonce].sort().join('')
