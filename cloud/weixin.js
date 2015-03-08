@@ -114,26 +114,13 @@ exports.exec = function(params, cb) {
 
 //性别输出
 var sexout = function(x){
-	var sex = x.toString().toInteger();
-	switch (x){
-		case 0:
-		{
-			return '未知';
-			break;
-		}
-		case 1:
-		{
-			return '男';
-			break;
-		}
-		case 2:
-		{
-			return '女';
-			break;
-		}
-			
-		default:
-			break;
+	var sex = x.toString();
+	if (sex=='1') {
+		return '男';
+	} else if(sex=='2'){
+		return '女';
+	}else{
+		return '未知';
 	}
 }
 
