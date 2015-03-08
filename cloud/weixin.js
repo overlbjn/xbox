@@ -30,10 +30,8 @@ exports.exec = function(params, cb) {
   			console.log('getuser_error:'+error+'getuser_result:'+result.nickname);
   			if (result.nickname) {
   				var username = params.xml.FromUserName;
-  				console.log('username:'+username);
   				var password = params.xml.FromUserName;
   				var nickname = result.nickname;
-  				console.log('password:'+password);
   				if(username && password){
   					var user = new AV.User();
   					user.set('username', username.toString());
