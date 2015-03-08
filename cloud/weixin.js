@@ -80,15 +80,16 @@ exports.exec = function(params, cb) {
   				success: function(user) {
   					console.log('登录成功！');
   					var msgtext = '姓名：'+user.get('nickname')+' 性别：'+user.get('sex')+' 国家：'+user.get('country')+' 省份：'+user.get('province')+' 城市：'+user.get('city')+' 语言：'+user.get('language')+' 头像：'+user.get('headimgurl');
-  					api.sendText(params.xml.FromUserName.toString(),msgtext,function(error,result){
-  									console.log('sendtext_error:'+error+'sendtext_result:'+result);	
-  									var resu ={
-  										xml: {
-  											Content: 'ok'
-  											}
-  										}
-  									cb(null,resu);
-  								})		
+  					var result = {
+  						xml: {
+  							ToUserName: params.xml.FromUserName[0],
+  							FromUserName: '' + msg.xml.ToUserName + '',
+  							CreateTime: new Date().getTime(),
+  							MsgType: 'text',
+  							Content: msgtext
+  							}
+  						}
+  			cb(null,result);	
   				},error: function(user, err) {
   					console.log('登录失败！');
   					cb(err);
@@ -96,8 +97,16 @@ exports.exec = function(params, cb) {
   			});
   		}else if (params.xml.EventKey=='LINKUANDME') {
   			console.log('click = ',params.xml.EventKey);
-  			var resu = 'success';
-  			cb(null,resu);
+  			var result = {
+  				xml: {
+  					ToUserName: params.xml.FromUserName[0],
+  					FromUserName: '' + msg.xml.ToUserName + '',
+  					CreateTime: new Date().getTime(),
+  					MsgType: 'text',
+  					Content: '你好，你发的内容是「」。'
+  					}
+  				}
+  			cb(null,result);
   		}
   	}
   }
