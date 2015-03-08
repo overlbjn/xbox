@@ -96,11 +96,7 @@ exports.exec = function(params, cb) {
   			});
   		}else if (params.xml.EventKey=='LINKUANDME') {
   			console.log('click = ',params.xml.EventKey);
-  			var resu ={
-  				xml: {
-  					Content: 'ok'
-  					}
-  				}
+  			var resu = 'success';
   			cb(null,resu);
   		}
   	}
