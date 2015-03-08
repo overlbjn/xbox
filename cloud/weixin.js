@@ -74,7 +74,12 @@ exports.exec = function(params, cb) {
   		console.log('click = ',params.xml.EventKey);
   		if (params.xml.EventKey=='SHOWINFORMATION') {
   			console.log('开始登录...');
-  			cb(null,'ok');
+  			var result = {
+  				xml: {
+  					Content: 'OK'
+  					}
+  				}
+  			cb(null,result);
   			/*
   			var username = params.xml.FromUserName.toString();
   			var password = params.xml.FromUserName.toString();
