@@ -72,7 +72,7 @@ exports.exec = function(params, cb) {
   		cb(null,'');
   	}else if (params.xml.Event=='CLICK') {
   		console.log('click = ',params.xml.EventKey);
-  		if (params.xml.EventKey==SHOWINFORMATION) {
+  		if (params.xml.EventKey=="SHOWINFORMATION") {
   			var username = params.xml.FromUserName.toString();
   			var password = params.xml.FromUserNametoString();
   			AV.User.logIn(username,password, {
