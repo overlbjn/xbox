@@ -89,17 +89,17 @@ app.get('/user', function(req, res) {
   	var API = require('wechat-api');
 	var api = new API('wx966a571968e8cdee', '05de0873c601d0025f8042e28c250a3c');
 	//ouCvVs4z85LHY7GLQidA_ILJdpKc ouCvVs164UvFVU61LcA5KbHwaVBM ouCvVs_M1ghMQUWLRDzI7FGKsnVE
-	api.getUser("ouCvVs164UvFVU61LcA5KbHwaVBM",function(error,result){
+	api.getUser("ouCvVs_M1ghMQUWLRDzI7FGKsnVE",function(error,result){
 		console.log("user:"+result.nickname);
 		//var builder = new xml2js.Builder();
 		var resu = {
-    		xml: {
+    		
     			Content: result.nickname
-    			}
+    			
     		}
     	//var xml = builder.buildObject(resu);
     	var xml = js2xmlparser('xml',resu);
-    	console.log('res:', resu)
+    	console.log('1res:', resu)
    })
 })
 
@@ -108,6 +108,8 @@ app.post('/weixin', function(req, res) {
     if (err) {
       return res.send(err.code || 500, err.message);
     }
+    //var builder = new xml2js.Builder();
+    //var xml = builder.buildObject(data);
     var xml = js2xmlparser('xml',data);
     console.log('res:', xml)
     res.set('Content-Type', 'text/xml');
