@@ -90,6 +90,7 @@ exports.exec = function(params, cb) {
   				}
   			});
   		}
+  		cb(null,'');
   	}else{
   		cb(null,'');
   	}
