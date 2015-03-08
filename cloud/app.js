@@ -61,9 +61,9 @@ app.get('/menu', function(req, res) {
    			"key":"SHOWINFORMATION"
    		},
    		{
-   			"type":"view",
+   			"type":"click",
    			"name":"link",
-   			"url":"http://www.baidu.com"
+   			"key":"LINKUANDME"
    		}
    		]
 		}
