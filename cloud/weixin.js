@@ -16,7 +16,7 @@ exports.exec = function(params, cb) {
   	
   	console.log('msg:'+params.xml.MsgId);
   	//消息处理
-  	var msgStr = '你好，你发的内容是「' + msg.xml.Content + '」。';
+  	var msgStr = '你好，你发的内容是「' + params.xml.Content + '」。';
     receiveMessage(params,msgStr, cb);
     
   } else if(params.xml.Event){
@@ -55,10 +55,7 @@ exports.exec = function(params, cb) {
   							console.log('user error:'+error.code+error.message);
   							if (error.code==202) {
   								var msgtext = nickname+' 欢迎回来!';
-  								api.sendText(params.xml.FromUserName.toString(),msgtext,function(error,result){
-  									console.log('sendtext_error:'+error+'sendtext_result:'+result);
-  									cb(error,result);
-  								})
+  								receiveMessage(params,msgtext,cb);
   							}
   						}
   					})
