@@ -2,6 +2,8 @@ var express = require('express');
 var xml2js = require('xml2js');
 var utils = require('express/node_modules/connect/lib/utils');
 var weixin = require('cloud/weixin.js');
+
+
 // 解析微信的 xml 数据
 var xmlBodyParser = function (req, res, next) {
   if (req._body) return next();
@@ -44,14 +46,32 @@ app.use(xmlBodyParser);
 
 
 // 使用 Express 路由 API 服务 /hello 的 HTTP GET 请求
-app.get('/hello', function(req, res) {
-	console.log('1weixin req:', req.query);
-  	weixin.exec(req.query, function(err, data) {
-    if (err) {
-      return res.send(err.code || 500, err.message);
-    }
-    return res.send(data);
-  });
+//更新menu
+app.get('/menu', function(req, res) {
+	var menu = {
+		"button":[
+		{
+			"type":"view",
+			"name":"ask",
+			"url":"http://www.baidu.com"
+		},
+   		{
+   			"type":"view",
+   			"name":"show",
+   			"url":"http://www.baidu.com"
+   		},
+   		{
+   			"type":"view",
+   			"name":"link",
+   			"url":"http://www.baidu.com"
+   		}
+   		]
+		}
+	var API = require('wechat-api');
+	var api = new API('wx966a571968e8cdee', '05de0873c601d0025f8042e28c250a3c');
+	api.createMenu(menu,function(error,result){
+		console.log('creatmenu_error:',error+'result:'+result.errmsg);
+	});
 });
 
 app.get('/weixin', function(req, res) {

@@ -25,37 +25,29 @@ exports.exec = function(params, cb) {
   	//订阅
   	if(params.xml.Event=='subscribe'){
   		//注册
-  		
   		console.log('注册：'+params.xml.FromUserName.toString());
-  		var username = params.xml.FromUserName;
-  		console.log('username:'+username);
-    	var password = params.xml.FromUserName;
-    	console.log('password:'+password);
-    	if (username && password) {
-        	var user = new AV.User();
-        	user.set('username', username.toString());
-        	user.set('password', password.toString());
-        	user.signUp(null, {
-        		success: function(user) {
-        			console.log('注册成功');
-        			// Hooray! Let them use the app now.
-        			api.getUser('ouCvVs164UvFVU61LcA5KbHwaVBM',function(error,result){
-        				if (error) {
-        					console.log('error:'+error);
-        				} else{
-        					var nickna = result.nickname;
-        					user.set('nickname',nickna.toString());
-        					user.save;
-        				}
-        			})
-        		},
-        		error: function(user, error) {
-        			//Show the error message somewhere and let the user try again.
-        			console.log('user error:'+error.code+error.message);
-        		}
-        	});
-    	}
-    	
+  		api.getUser(params.xml.FromUserName,function(error,result){
+  			console.log('getuser_error:'+error+'getuser_result:'+result.nickname);
+  			if (result.nickname) {
+  				var username = params.xml.FromUserName;
+  				console.log('username:'+username);
+  				var password = params.xml.FromUserName;
+  				console.log('password:'+password);
+  				if(username && password){
+  					var user = new AV.User();
+  					user.set('username', username.toString());
+  					user.set('password', password.toString());
+  					user.sign(null,{
+  						success:function(user){
+  							console.log('注册成功');
+  						},
+  						error:function(user,error){
+  							console.log('user error:'+error.code+error.message);
+  						}
+  					})
+  				}
+  			}
+  		})
   	};
   }
 }
