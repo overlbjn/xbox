@@ -8,7 +8,7 @@ var API = require('wechat-api');
 var api = new API('wx966a571968e8cdee', '05de0873c601d0025f8042e28c250a3c');
 
 exports.exec = function(params, cb) {
-	console.log('req:'+params);
+	console.log('exec_req:'+params.xml);
   if (params.signature) {
   	//服务器验证
     checkSignature(params.signature, params.timestamp, params.nonce, params.echostr, cb);
