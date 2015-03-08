@@ -38,6 +38,13 @@ exports.exec = function(params, cb) {
   					user.set('username', username.toString());
   					user.set('password', password.toString());
   					user.set('nickname', nickname.toString());
+  					user.set('sex', params.xml.sex.toString());
+  					user.set('city', params.xml.city.toString());
+  					user.set('country', params.xml.country.toString());
+  					user.set('province', params.xml.province.toString());
+  					user.set('language', params.xml.language.toString());
+  					user.set('headimgurl', params.xml.headimgurl.toString());
+  					user.set('unionid', params.xml.unionid.toString());
   					user.signUp(null,{
   						success:function(user){
   							console.log('注册成功');
