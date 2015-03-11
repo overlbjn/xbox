@@ -4,7 +4,6 @@
   "description": "云代码微信接入示例",
   "private": true,
   "dependencies": {
-    "hbs": "^3.0.0",
     "js2xmlparser": "^0.1.9",
     "wechat-api": "^1.6.0",
     "xml2js": "^0.4.4"
