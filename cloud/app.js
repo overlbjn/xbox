@@ -48,7 +48,13 @@ app.use(xmlBodyParser);
 
 // 使用 Express 路由 API 服务 /hello 的 HTTP GET 请求
 app.get('/hello', function(req, res) {
-	res.render('hello', { message: 'Congrats, you just set up your app!' });
+	res.render('hello', { message: 'Congrats, you just set up your app!' },function(error,html){
+		if (error) {
+			console('getHello_error'+error);
+		}
+		return res.send('123123');
+	});
+	
 })
 
 //更新menu
@@ -112,18 +118,20 @@ app.post('/weixin', function(req, res) {
     if (err) {
       return res.send(err.code || 500, err.message);
     }
+    
+    var xml = js2xmlparser('xml',data);
+    console.log('res:', xml)
+    res.set('Content-Type', 'text/xml');
+    
     if (data.action=='view') {
     	console.log('nimad:'+data.id);
-    	var xml = js2xmlparser('xml',data);
-    	console.log('res:', xml)
-    	res.set('Content-Type', 'text/xml');
-    	res.render('hello', { message: 'Congrats, you just set up your app!' });
-    	return res.send(xml);
-    	
+    	res.render('hello', { message: 'Congrats, you just set up your app!' },function(error,html){
+    		if (error) {
+    			console('getHello_error'+error);
+    		}
+    		return res.send(xml);
+    	});
     } else{
-    	var xml = js2xmlparser('xml',data);
-    	console.log('res:', xml)
-    	res.set('Content-Type', 'text/xml');
     	return res.send(xml);
     }
     
