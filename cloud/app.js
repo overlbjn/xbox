@@ -72,9 +72,9 @@ app.get('/menu', function(req, res) {
    			"key":"SHOWINFORMATION"
    		},
    		{
-   			"type":"click",
-   			"name":"link",
-   			"key":"LINKUANDME"
+   			"type":"view",
+   			"name":"me",
+   			"url":"http://xbox.avosapps.com/me"
    		}
    		]
 		}
@@ -118,20 +118,10 @@ app.post('/weixin', function(req, res) {
     if (err) {
       return res.send(err.code || 500, err.message);
     }
-    if (data.action=='view') {
-    	console.log('nimad:'+data.id);
-    	app.render('hello', { message: 'Congrats, you just set up your app!' },function(error,html){
-    		if (error) {
-    			console('getHello_error'+error);
-    		}
-    		return res.send('success');
-    	});
-    } else{
-    	var xml = js2xmlparser('xml',data);
+    var xml = js2xmlparser('xml',data);
     	console.log('res:', xml)
     	res.set('Content-Type', 'text/xml');
     	return res.send(xml);
-    }
     
   });
 })
