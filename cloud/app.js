@@ -118,11 +118,6 @@ app.post('/weixin', function(req, res) {
     if (err) {
       return res.send(err.code || 500, err.message);
     }
-    
-    var xml = js2xmlparser('xml',data);
-    console.log('res:', xml)
-    res.set('Content-Type', 'text/xml');
-    
     if (data.action=='view') {
     	console.log('nimad:'+data.id);
     	app.render('hello', { message: 'Congrats, you just set up your app!' },function(error,html){
@@ -132,6 +127,9 @@ app.post('/weixin', function(req, res) {
     		return res.send('success');
     	});
     } else{
+    	var xml = js2xmlparser('xml',data);
+    	console.log('res:', xml)
+    	res.set('Content-Type', 'text/xml');
     	return res.send(xml);
     }
     
