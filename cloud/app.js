@@ -114,6 +114,12 @@ app.post('/weixin', function(req, res) {
     }
     if (data.action=='view') {
     	console.log('nimad:'+data.id);
+    	var xml = js2xmlparser('xml',data);
+    	console.log('res:', xml)
+    	res.set('Content-Type', 'text/xml');
+    	res.render('hello', { message: 'Congrats, you just set up your app!' });
+    	return res.send(xml);
+    	
     } else{
     	var xml = js2xmlparser('xml',data);
     	console.log('res:', xml)
