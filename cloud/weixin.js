@@ -137,7 +137,7 @@ var receiveMessage = function(msg,msgContent, cb) {
   	CreateTime: new Date().getTime(),
   	MsgType: 'text',
   	Content: msgContent
-  	
+  
   }
   cb(null, result);
 }

@@ -115,12 +115,10 @@ app.post('/weixin', function(req, res) {
     if (data.action=='view') {
     	console.log('nimad:'+data.id);
     } else{
-    	//var builder = new xml2js.Builder();
-    //var xml = builder.buildObject(data);
-    var xml = js2xmlparser('xml',data);
-    console.log('res:', xml)
-    res.set('Content-Type', 'text/xml');
-    return res.send(xml);
+    	var xml = js2xmlparser('xml',data);
+    	console.log('res:', xml)
+    	res.set('Content-Type', 'text/xml');
+    	return res.send(xml);
     }
     
   });
