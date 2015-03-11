@@ -84,12 +84,8 @@ app.get('/weixin', function(req, res) {
   weixin.exec(req.query, function(err, data) {
     if (err) {
       return res.send(err.code || 500, err.message);
-    }else if(data.action=='view'){
-    	console.log('haha:'+data.id);
-    }else{
-    	console.log('hahgggg:'+data);
-    	return res.send(data);
     }
+    return res.send(data);
   });
 })
 
@@ -113,15 +109,21 @@ app.get('/user', function(req, res) {
 
 app.post('/weixin', function(req, res) {
   weixin.exec(req.body, function(err, data) {
+  		
     if (err) {
       return res.send(err.code || 500, err.message);
+    }else{
+    	var xml = js2xmlparser('xml',data);
+    	console.log('res:', xml);
+    	if(xml.action=='view'){
+    		console.log('haha:'+data.id);
+    	}else{
+    		var xml = js2xmlparser('xml',data);
+    		console.log('res:', xml);
+    		res.set('Content-Type', 'text/xml');
+    		return res.send(xml);
     }
-    //var builder = new xml2js.Builder();
-    //var xml = builder.buildObject(data);
-    var xml = js2xmlparser('xml',data);
-    console.log('res:', xml)
-    res.set('Content-Type', 'text/xml');
-    return res.send(xml);
+    } 
   });
 })
 
