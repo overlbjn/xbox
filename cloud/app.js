@@ -109,21 +109,20 @@ app.get('/user', function(req, res) {
 
 app.post('/weixin', function(req, res) {
   weixin.exec(req.body, function(err, data) {
-  		
     if (err) {
       return res.send(err.code || 500, err.message);
-    }else{
-    	var xml = js2xmlparser('xml',data);
-    	console.log('res:', xml);
-    	if(xml.action=='view'){
-    		console.log('haha:'+data.id);
-    	}else{
-    		var xml = js2xmlparser('xml',data);
-    		console.log('res:', xml);
-    		res.set('Content-Type', 'text/xml');
-    		return res.send(xml);
     }
-    } 
+    if (data.action=='view') {
+    	console.log('nimad:'+data.id);
+    } else{
+    	//var builder = new xml2js.Builder();
+    //var xml = builder.buildObject(data);
+    var xml = js2xmlparser('xml',data);
+    console.log('res:', xml)
+    res.set('Content-Type', 'text/xml');
+    return res.send(xml);
+    }
+    
   });
 })
 
