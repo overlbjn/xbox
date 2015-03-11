@@ -84,8 +84,11 @@ app.get('/weixin', function(req, res) {
   weixin.exec(req.query, function(err, data) {
     if (err) {
       return res.send(err.code || 500, err.message);
+    }else if(data.action=='view'){
+    	console.log('haha:'+data.id);
+    }else{
+    	return res.send(data);
     }
-    return res.send(data);
   });
 })
 

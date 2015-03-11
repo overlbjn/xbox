@@ -82,8 +82,12 @@ exports.exec = function(params, cb) {
   			});
   		}else if (params.xml.EventKey=='LINKUANDME') {
   			console.log('click = ',params.xml.EventKey);
-  			receiveMessage(params,'功能飞行中...',cb);
-  			cb(null,result);
+  			var result = {
+  				action: 'view',
+  				id: 'test'
+  			}
+  			cb(null, result);
+  			
   		}
   	}
   }
