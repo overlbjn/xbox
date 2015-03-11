@@ -48,7 +48,7 @@ app.use(xmlBodyParser);
 
 // 使用 Express 路由 API 服务 /hello 的 HTTP GET 请求
 app.get('/hello', function(req, res) {
-	res.render('hello', { message: 'Congrats, you just set up your app!' },function(error,html){
+	app.render('hello', { message: 'Congrats, you just set up your app!' },function(error,html){
 		if (error) {
 			console('getHello_error'+error);
 		}
@@ -125,11 +125,11 @@ app.post('/weixin', function(req, res) {
     
     if (data.action=='view') {
     	console.log('nimad:'+data.id);
-    	res.render('hello', { message: 'Congrats, you just set up your app!' },function(error,html){
+    	app.render('hello', { message: 'Congrats, you just set up your app!' },function(error,html){
     		if (error) {
     			console('getHello_error'+error);
     		}
-    		return res.send(xml);
+    		return res.send('success');
     	});
     } else{
     	return res.send(xml);
