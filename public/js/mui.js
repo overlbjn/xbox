@@ -5816,7 +5816,7 @@ var mui = (function(document, undefined) {
 			var action = document.createElement('span');
 			action.className = actionClass;
 			if (actionClass === this.searchActionClass) {
-				action.innerHTML = '<span class="' + CLASS_ICON + ' ' + CLASS_ICON_SEARCH + '"></span>' + this.element.getAttribute('placeholder');
+				action.innerHTML = '<span id="23123" class="' + CLASS_ICON + ' ' + CLASS_ICON_SEARCH + '"></span>' + this.element.getAttribute('placeholder');
 				this.element.setAttribute('placeholder', '');
 			}
 			row.insertBefore(action, this.element.nextSibling);
@@ -5905,7 +5905,7 @@ var mui = (function(document, undefined) {
 				document.body.classList.remove(CLASS_FOCUSIN);
 			});
 		} else {
-			alert('only for 5+');
+//			alert('only for 5+');
 		}
 		event.preventDefault();
 	};

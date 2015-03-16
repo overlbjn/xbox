@@ -4,7 +4,7 @@ var debug = require('debug')('AV:weixin');
 var User = AV.Object.extend('_User');
 
 var API = require('wechat-api');
-var api = new API('wx966a571968e8cdee', '05de0873c601d0025f8042e28c250a3c');
+var api = new API(config.appid, config.appsecret);
 
 exports.exec = function(params, cb) {
 	console.log('exec_req:'+params.xml.CreateTime);
