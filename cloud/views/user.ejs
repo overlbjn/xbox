@@ -6,6 +6,25 @@
     <title>ME</title>
     <script src="http://www.w3school.com.cn/jquery/jquery.js"></script>
     <script src="js/mui.min.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script type="text/javascript">
+			//通过config接口注入权限验证配置
+			wx.config({
+			    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+			    appId: '<%= appId %>', // 必填，公众号的唯一标识
+			    timestamp: '<%= timestamp %>', // 必填，生成签名的时间戳
+			    nonceStr: '<%= nonceStr %>', // 必填，生成签名的随机串
+			    signature: '<%= signature %>',// 必填，签名
+			    jsApiList: '<%= jsApiList %>' // 必填，需要使用的JS接口列表
+			});
+			//通过ready接口处理成功验证
+			wx.ready(function(){
+				// config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后
+			});
+			wx.error(function(res){
+
+			});
+    </script>
     <link href="css/mui.min.css" rel="stylesheet"/>
     
 </head>
@@ -19,24 +38,24 @@
 		</header>
 		<aside id="offCanvas" class="mui-off-canvas-right">
 			<ul class="mui-table-view mui-table-view-chevron mui-table-view-inverted">
-				<li class="mui-table-view-cell">
-					<a class="mui-navigate-right">
-						Item 1
+				<li id="editinfoli" class="mui-table-view-cell">
+					<a href="#editinfo" class="mui-navigate-right">
+						编辑资料
 					</a>
 				</li>
-				<li class="mui-table-view-cell">
-					<a class="mui-navigate-right">
-						Item 2
+				<li id="showinfoli" class="mui-table-view-cell">
+					<a href="#showinfo" class="mui-navigate-right">
+						制作卡片
 					</a>
 				</li>
-				<li class="mui-table-view-cell">
-					<a class="mui-navigate-right">
-						Item 3
+				<li id="mycard"class="mui-table-view-cell">
+					<a href="#showinfo" class="mui-navigate-right" href="#showinfo">
+						我的卡片
 					</a>
 				</li>
 			</ul>
 		</aside>
-		<div class="mui-content">
+		<div id="editinfo" class="mui-content">
 			<ul class="mui-table-view mui-table-view-chevron">
 				<li class="mui-table-view-cell mui-collapse">
 					<a class="mui-navigate-right" href="#">身份信息</a>
@@ -49,7 +68,7 @@
 								<label>年龄</label><input type="text" name="age" placeholder="请输入您的年龄" onBlur="if(/\D/.test(this.value)){alert('请输入正确的年龄！');this.value='<%= age %>';}" value=<%= age %>>
 							</div>
 							<div class="mui-input-row">
-								<label>国际</label><input type="text" name="country" placeholder="请输入您的国家" value=<%= country %>>
+								<label>国家</label><input type="text" name="country" placeholder="请输入您的国家" value=<%= country %>>
 							</div>
 							<div class="mui-input-row">
 								<label>身份证号</label><input type="text" name="IDnumber" placeholder="请输入您的身份证号" onBlur="if(/\D/.test(this.value)){alert('请输入正确的身份证号！');this.value='<%= IDnumber %>';}" value=<%= IDnumber %>>
@@ -74,35 +93,156 @@
 					</ul>
 				</li>
 			</ul>
-			<button id="updatebutton" class="mui-btn mui-btn-positive mui-btn-block" >Block button</button>
+			<button id="updatebutton" class="mui-btn mui-btn-positive mui-btn-block" >保存</button>
 		</div>
+		
+		<div id="showinfo" class="mui-content" style="display: none;">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell mui-checkbox mui-right">
+					<h4> 姓名: <%= nickname %></h4><input name="nickname" type="checkbox">
+				</li>
+				<li class="mui-table-view-cell mui-checkbox mui-right">
+					<h4> 年龄: <%= age %></h4><input name="age" type="checkbox">
+				</li>
+				<li class="mui-table-view-cell mui-checkbox mui-right">
+					<h4> 国家: <%= country %></h4><input name="country" type="checkbox">
+				</li>
+				<li class="mui-table-view-cell mui-checkbox mui-right">
+					<h4> 身份证号: <%= IDnumber %></h4><input name="IDnumber" type="checkbox">
+				</li>
+				<li class="mui-table-view-cell mui-checkbox mui-right">
+					<h4> QQ: <%= QQ %></h4><input name="QQ" type="checkbox">
+				</li>
+				<li class="mui-table-view-cell mui-checkbox mui-right">
+					<h4> 微博: <%= weibo %></h4><input name="weibo" type="checkbox">
+				</li>
+				<li class="mui-table-view-cell mui-checkbox mui-right">
+					<h4> 陌陌: <%= MOMO %></h4><input name="MOMO" type="checkbox">
+				</li>
+			</ul>
+			<button id="showbutton" class="mui-btn mui-btn-positive mui-btn-block" >制作</button>
+		</div>
+		
+		<div id="mycardlist" class="mui-content" style="display: none;">
+			<ul id="cardul" class="mui-table-view mui-table-view-chevron">
+				<!--<li class="mui-table-view-cell ">
+					<a class="mui-navigate-right">
+						<span class="mui-badge">15</span>
+						Item 1
+					</a>
+				</li>-->
+			</ul>
+			<!--<button id="mycardlistbtn" class="mui-btn mui-btn-positive mui-btn-block" >制作</button>-->
+		</div>
+
 		<!-- off-canvas backdrop -->
 		<div class="mui-off-canvas-backdrop"></div>
 	</div>
 	<script  type="text/javascript" charset="utf-8">
+		
+		var infolistdata;
       	function updateinfo() {
-//    		alert($("input")[5].name);
+
 			var userData = {};
-      		for (var i=0;i<$("input").length;i++) {
-      			userData[$("input")[i].name]=$("input")[i].value;
+      		for (var i=0;i<$(":text").length;i++) {
+      			userData[$(":text")[i].name]=$(":text")[i].value;
       		}
       		userData["userid"]='<%= userid %>';
-      		$.post("/test", userData,function(data){
+      		$.post("/update", userData,function(data){
       			alert('data:'+data);
       		});
       	}
       	var el = document.getElementById("updatebutton");
       	el.addEventListener("tap", updateinfo);
+      	
+      	function showinfobn() {
+			var userData = {};
+      		for (var i=0;i<$(":checkbox:checked").length;i++) {
+      				userData[$(":checkbox:checked")[i].name]=$(":checkbox:checked")[i].name;
+      		}
+      		userData["userid"]='<%= userid %>';
+      		$.post("/show", userData,function(data){
+      			alert('data:'+data);
+      		});
+      	}
+      	var showbn = document.getElementById("showbutton");
+      	showbn.addEventListener("tap", showinfobn);
+
+		function editinfo(){
+			document.getElementById("editinfo").style.display="";
+			document.getElementById("showinfo").style.display="none";
+			document.getElementById("mycardlist").style.display="none";
+		}
+		var editinfoli = document.getElementById("editinfoli");
+		editinfoli.addEventListener("tap", editinfo);
+		
+		function showinfo(){
+			document.getElementById("editinfo").style.display="none";
+			document.getElementById("showinfo").style.display="";
+			document.getElementById("mycardlist").style.display="none";
+		}
+		var showinfoli = document.getElementById("showinfoli");
+		showinfoli.addEventListener("tap", showinfo);
+		
+		function shareshowinfo(){
+			console.log("share!!!");
+			$.post("/wxjs",function(data){
+				
+			})
+			
+		}
+		
+		function showinfolist(){
+//			console.log("datahaiziama :"+JSON.parse(infolistdata[this.id].list).userid);
+//			var showinfoid={"infoid":this.id};
+			var elid = this.id;
+			var oldulid = "oldul"+elid;
+			$.post("/getmycardinfo", infolistdata[elid], function(data){
+//				alert("data:"+JSON.stringify(data));
+				var oldul = document.getElementById(oldulid);
+				if (oldul) {
+					document.getElementById(elid).removeChild(oldul);
+				}
+				var cardinfoul=document.createElement('ul');
+				cardinfoul.id = oldulid;
+				cardinfoul.className="mui-table-view mui-table-view-chevron";
+				for (var vk in data) {
+					var cardinfoli = document.createElement('li');
+					cardinfoli.className = "mui-table-view-cell";
+					cardinfoli.innerHTML = '<h4> '+vk+': '+data[vk]+'</h4>';
+					cardinfoul.appendChild(cardinfoli);
+				}
+				var cardinfoli = document.createElement('li');
+				cardinfoli.className = "mui-table-view-cell";
+				cardinfoli.innerHTML = '<h3>点我复制连接！</h3>';
+				cardinfoli.addEventListener("tap", shareshowinfo);
+				cardinfoul.appendChild(cardinfoli);
+				document.getElementById(elid).appendChild(cardinfoul);
+			});
+		}
+		
+		function mycardlist(){
+			document.getElementById("editinfo").style.display="none";
+			document.getElementById("showinfo").style.display="none";
+			$.post("/getmycardlist",function(data){
+      			document.getElementById("mycardlist").style.display="";
+      			infolistdata = {};
+      			infolistdata = data;
+      			console.log("接着啦："+data.length);
+      			var  cardUl=document.getElementById('cardul')
+      			cardUl.innerHTML='';
+      			for (var i=0;i<data.length;i++){
+      				var cardLi=document.createElement('li');
+      				cardLi.addEventListener("tap", showinfolist);
+      				cardLi.className = "mui-table-view-cell mui-collapse";
+      				cardLi.id = i;
+      				cardLi.innerHTML = '<a class="mui-navigate-right">'+data[i].createdAt+'</a>';
+					cardUl.appendChild(cardLi);
+      			}
+      		});
+		}
+		var mycardli = document.getElementById("mycard");
+		mycardli.addEventListener("tap", mycardlist);
     </script>
 </body>
 </html>
-<!--email:user.get('email'),
-  					sex:user.get('sex'),
-  					nickname:user.get('nickname'),
-  					city:user.get('city'),
-  					headimgurl:user.get('headimgurl'),
-  					language:user.get('language'),
-  					province:user.get('province'),
-  					country:user.get('country'),
-  					unionid:user.get('unionid'),
-  					createat:user.get('createat')-->

@@ -4,13 +4,57 @@ var debug = require('debug')('AV:weixin');
 var User = AV.Object.extend('_User');
 var API = require('wechat-api');
 //var api = new API(config.appid, config.appsecret);
-var api = new API(config.appid, config.appsecret);
+var api = new API(config.appid, config.appsecret, function (callback) {
+	
+	console.log("weixin 不需要更新 取旧的token");
+	var query = new AV.Query('Weixin');
+		query.equalTo("objectId", "54fad5f6e4b06c41dff20100");
+		query.find({
+			success: function(results) {
+				for (var i = 0; i < results.length; i++) {
+					var object = results[i];
+					callback(null,JSON.parse(object.get('access_token')));
+					console.log("旧的：",JSON.parse(object.get('access_token')));
+				}
+				},
+			error: function(error) {
+				console.log("Error: " + error.code + " " + error.message);
+				return callback(err);
+			}
+		});
+}, function (token, callback) {
+	console.log("weixin 需要更新 存新的token："+token.accessToken);
+	var query = new AV.Query('Weixin');
+		query.equalTo("objectId", "54fad5f6e4b06c41dff20100");
+		query.find({
+			success: function(results) {
+				for (var i = 0; i < results.length; i++) {
+					var object = results[i];
+//					console.log("新的token"+token.accessToken);
+					object.set('access_token',JSON.stringify(token.accessToken));
+					object.save(null,{
+						success: function(object){
+							console.log("token 存了");
+						},
+						error: function(error){
+							console.log("token 存失败"+error.description);
+						}
+					});
+				}
+				},
+			error: function(error) {
+				console.log("Error: " + error.code + " " + error.message);
+				return callback(err);
+			}
+		});
+})
+
 //var api = new API(config.appid, config.appsecret);
 api.getLatestToken(function(err,token){
 	if (err) {
 		console.log('weixin error:'+err);
 	}else{
-		console.log("weixin api初始化"+token.accessToken);
+		console.log("weixin token 初始化"+token.accessToken);
 	}	
 });
 
@@ -100,8 +144,6 @@ exports.exec = function(params, cb) {
   			cb(null, result);
   			
   		}
-  	}else if (params.xml.Event=='scancode_push') {
-  		
   	}
   }
 }
