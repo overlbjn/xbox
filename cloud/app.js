@@ -9,7 +9,7 @@ var client = new OAuth(config.appid, config.appsecret);
 var API = require('wechat-api');
 var api = new API(config.appid, config.appsecret);
 var avosExpressCookieSession = require('avos-express-cookie-session');
-var sign = require('cloud/sign.js');
+var jsSHA = require("jssha");
 
 api.getLatestToken(function(err,token){
 	if (err) {
@@ -119,6 +119,23 @@ function userinfoinit(user,openid){
 	return userinfo;
 }
 
+// noncestr
+     var createNonceStr = function() {
+          return Math.random().toString(36).substr(2, 15);
+     };
+
+      // timestamp
+     var createTimeStamp = function () {
+          return parseInt(new Date().getTime() / 1000) + '';
+     };
+
+// 计算签名方法
+     var calcSignature = function (ticket, noncestr, ts, url) {
+          var str = 'jsapi_ticket=' + ticket + '&noncestr=' + noncestr + '&timestamp='+ ts +'&url=' + url;
+          shaObj = new jsSHA(str, 'TEXT');
+          return shaObj.getHash('SHA-1', 'HEX');
+     }
+
 // 使用 Express 路由 API 服务 /hello 的 HTTP GET 请求
 app.get('/hello', function(req, res) {
 	app.render('hello', { message: 'Congrats, you just set up your app!' },function(error,html){
@@ -185,34 +202,15 @@ app.get('/me', function(req, res) {
 				var user =AV.User.current();
 				var userinfo = userinfoinit(user);
   				console.log("缓存用户TOme:");
-//				var param = {
-//					debug: true,
-//					jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage'],
-//					url: 'http://xobx.avosapps.com/me'
-//				};
-//				api.getJsConfig(param, function(jserr,jsresult){
-//					if (jserr) {
-//						console.log("js error:"+jserr);
-//						
-//					}else{
-//						console.log("js: "+JSON.stringify(jsresult));
-//						userinfo["appId"]=result["appId"];
-//						userinfo["timestamp"]=result["timestamp"];
-//						userinfo["nonceStr"]=result["nonceStr"];
-//						userinfo["signature"]=result["signature"];
-//						userinfo["jsApiList"]=['onMenuShareTimeline', 'onMenuShareAppMessage'];
-//						res.render('me',userinfo);
-//					}
-//				});
 				api.getLatestTicket(function(err,ticket){
-					var jsresult = sign(ticket, 'req.protocol+"://"+req.host+req.path');
-					console.log("官方："+JSON.stringify());
-					userinfo["appId"]="wx966a571968e8cdee";
-					userinfo["timestamp"]=jsresult["timestamp"];
-					userinfo["nonceStr"]=jsresult["nonceStr"];
-					userinfo["signature"]=jsresult["signature"];
+					var nostr = createNonceStr();
+					var timstr = createTimeStamp();
+					var signature = calcSignature(ticket.ticket, nostr, timstr, req.protocol+"://"+req.host+req.path);
+					userinfo["appId"]=config.appid;
+					userinfo["timestamp"]=timstr;
+					userinfo["nonceStr"]=nostr;
+					userinfo["signature"]=signature;
 					userinfo["jsApiList"]=['onMenuShareTimeline', 'onMenuShareAppMessage'];
-					userinfo["url"]=jsresult["url"];
 					console.log("user:"+JSON.stringify(userinfo));
 					res.render('me',userinfo);
 				});
@@ -223,14 +221,14 @@ app.get('/me', function(req, res) {
 						console.log("新登录用户TOme:");
 						var userinfo = userinfoinit(user);
 		  				api.getLatestTicket(function(err,ticket){
-							var jsresult = sign(ticket, 'req.protocol+"://"+req.host+req.path');
-							console.log("官方："+JSON.stringify());
-							userinfo["appId"]="wx966a571968e8cdee";
-							userinfo["timestamp"]=jsresult["timestamp"];
-							userinfo["nonceStr"]=jsresult["nonceStr"];
-							userinfo["signature"]=jsresult["signature"];
+							var nostr = createNonceStr();
+							var timstr = createTimeStamp();
+							var signature = calcSignature(ticket.ticket, nostr, timstr, req.protocol+"://"+req.host+req.path);
+							userinfo["appId"]=config.appid;
+							userinfo["timestamp"]=timstr;
+							userinfo["nonceStr"]=nostr;
+							userinfo["signature"]=signature;
 							userinfo["jsApiList"]=['onMenuShareTimeline', 'onMenuShareAppMessage'];
-							userinfo["url"]=jsresult["url"];
 							console.log("user:"+JSON.stringify(userinfo));
 							res.render('me',userinfo);
 		  				});
@@ -244,12 +242,13 @@ app.get('/me', function(req, res) {
 	});
 
 })
+	
 
-app.get('/user' ,function(req, res) {
+app.get('/user', requiredAuthentication, function(req, res) {
 	//ouCvVs4z85LHY7GLQidA_ILJdpKc ouCvVs164UvFVU61LcA5KbHwaVBM ouCvVs_M1ghMQUWLRDzI7FGKsnVE
-		console.log("test:");
-//	if (AV.User.current()) {
-//		console.log('欢迎回来'+AV.User.current().get("nickname"));
+		
+	if (AV.User.current()) {
+		console.log('欢迎回来'+AV.User.current().get("nickname"));
 //		var param = {
 //		debug: true,
 //		jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage'],
@@ -261,28 +260,27 @@ app.get('/user' ,function(req, res) {
 //				console.log("js error:"+err);
 //				
 //			}else{
-////				for (var vk in result) {
-////					userinfo[vk]=result[vk];
-//////					console.log("1:"+result[vk]);
-////				}
-//				userinfo["appId"]=result["appId"];
+//				userinfo["appId"]="wx966a571968e8cdee";
 //				userinfo["timestamp"]=result["timestamp"];
 //				userinfo["nonceStr"]=result["nonceStr"];
 //				userinfo["signature"]=result["signature"];
-//				userinfo["jsApiList"]=result["jsApiList"];
+//				userinfo["jsApiList"]=['onMenuShareTimeline', 'onMenuShareAppMessage'];
 //				console.log("haha:"+JSON.stringify(result));
-//				api.getLatestTicket(function(err,ticket){
-//					console.log("官方："+JSON.stringify(sign(ticket, 'http://xobx.avosapps.com/me')));
-//				});
-//				
 //				res.render('user',userinfo);
 //			}
-//		});
-//  	
-//   	
-//  } else {
-//  	console.log('数据异常！');
-//  }	
+		api.getLatestTicket(function(err,ticket){
+			var nostr = createNonceStr();
+			var timstr = createTimeStamp();
+			var signature = calcSignature(ticket.ticket, nostr, timstr, 'http://xbox.avosapps.com/me');
+			console.log("guan1:"+ticket.ticket);
+			console.log("guan2:"+nostr);
+			console.log("guan3:"+timstr);
+			console.log("guan4:"+signature);
+		});
+
+	} else {
+    	console.log('数据异常！');
+    }	
 })
 
 
