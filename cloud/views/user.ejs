@@ -9,15 +9,22 @@
     <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
     <script type="text/javascript">
 			//通过config接口注入权限验证配置
-			console.log("me:"+'<%= appId %>'+"  "+'<%= timestamp %>'+"  "+'<%= nonceStr %>'+"  "+'<%= signature %>'+"  "+'<%= jsApiList %>'+"  ");
-			alert("me:"+'<%= appId %>'+"  "+'<%= timestamp %>'+"  "+'<%= nonceStr %>'+"  "+'<%= signature %>'+"  "+'<%= jsApiList %>');
+//			alert("me:"+'<%= appId %>'+"  "+'<%= timestamp %>'+"  "+'<%= nonceStr %>'+"  "+'<%= signature %>'+'<%= url %>'+"  "+'<%= ticket %>');
 			wx.config({
 			    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
 			    appId: '<%= appId %>', // 必填，公众号的唯一标识
 			    timestamp: '<%= timestamp %>', // 必填，生成签名的时间戳
 			    nonceStr: '<%= nonceStr %>', // 必填，生成签名的随机串
 			    signature: '<%= signature %>',// 必填，签名
-			    jsApiList: '<%= jsApiList %>' // 必填，需要使用的JS接口列表
+			    jsApiList: [
+		            'checkJsApi',
+		            'onMenuShareTimeline',
+		            'onMenuShareAppMessage',
+		            'onMenuShareQQ',
+		            'onMenuShareWeibo',
+		            'hideMenuItems',
+		            'chooseImage'
+		        ] // 必填，需要使用的JS接口列表
 			});
 			//通过ready接口处理成功验证
 			wx.ready(function(){
@@ -57,7 +64,7 @@
 				</li>
 			</ul>
 		</aside>
-		<div id="editinfo" class="mui-content">
+		<div id="editinfo" class="mui-content ">
 			<ul class="mui-table-view mui-table-view-chevron">
 				<li class="mui-table-view-cell mui-collapse">
 					<a class="mui-navigate-right" href="#">身份信息</a>
@@ -186,17 +193,21 @@
 		var showinfoli = document.getElementById("showinfoli");
 		showinfoli.addEventListener("tap", showinfo);
 		
-		function shareshowinfo(){
-			console.log("share!!!");
-			$.post("/wxjs",function(data){
+		function shareshowinfo(e){
+			var sid = this.parentNode.parentNode.id;
+			console.log("share!!!:"+sid);
+			$.post("/sharethiscard", infolistdata[sid], function(data){
+				console.log("二维码："+JSON.stringify(data));
+				location.href=data;
 				
-			})
-			
+			});
+			e.stopPropagation();
 		}
 		
 		function showinfolist(){
 //			console.log("datahaiziama :"+JSON.parse(infolistdata[this.id].list).userid);
 //			var showinfoid={"infoid":this.id};
+			console.log("啥时候");
 			var elid = this.id;
 			var oldulid = "oldul"+elid;
 			$.post("/getmycardinfo", infolistdata[elid], function(data){
@@ -224,6 +235,7 @@
 		}
 		
 		function mycardlist(){
+			console.log("list");
 			document.getElementById("editinfo").style.display="none";
 			document.getElementById("showinfo").style.display="none";
 			$.post("/getmycardlist",function(data){
@@ -245,6 +257,9 @@
 		}
 		var mycardli = document.getElementById("mycard");
 		mycardli.addEventListener("tap", mycardlist);
+		
+		
+			
     </script>
 </body>
 </html>

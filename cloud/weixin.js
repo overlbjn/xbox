@@ -3,9 +3,8 @@ var config = require('cloud/config/weixin.js');
 var debug = require('debug')('AV:weixin');
 var User = AV.Object.extend('_User');
 var API = require('wechat-api');
-//var api = new API(config.appid, config.appsecret);
 var api = new API(config.appid, config.appsecret);
-//var api = new API(config.appid, config.appsecret);
+
 api.getLatestToken(function(err,token){
 	if (err) {
 		console.log('weixin error:'+err);
@@ -18,7 +17,7 @@ api.getLatestToken(function(err,token){
 
 
 exports.exec = function(params, cb) {
-	
+
   if (params.signature) {
   	//服务器验证
     checkSignature(params.signature, params.timestamp, params.nonce, params.echostr, cb);
@@ -77,31 +76,74 @@ exports.exec = function(params, cb) {
   		cb(null,'');
   	}else if (params.xml.Event=='CLICK') {
   		console.log('click = ',params.xml.EventKey);
-  		if (params.xml.EventKey=='SHOWINFORMATION') {
-  			console.log('开始登录...');
-  			var username = params.xml.FromUserName.toString();
-  			var password = params.xml.FromUserName.toString();
-  			AV.User.logIn(username,password, {
-  				success: function(user) {
-  					console.log('登录成功！');
-  					var msgtext = '姓名：'+user.get('nickname')+'\n性别：'+sexout(user.get('sex'))+'\n国家：'+user.get('country')+'\n省份：'+user.get('province')+'\n城市：'+user.get('city')+'\n语言：'+languageout(user.get('language'))+'\n头像：'+user.get('headimgurl');
-  					receiveMessage(params,msgtext,cb);	
-  				},error: function(user, err) {
-  					console.log('登录失败！');
-  					cb(err);
-  				}
-  			});
-  		}else if (params.xml.EventKey=='LINKUANDME') {
-  			console.log('click = ',params.xml.EventKey);
-  			var result = {
-  				action: 'view',
-  				id: 'test'
-  			}
-  			cb(null, result);
-  			
+  		var result = {
+  			success: 'success'
   		}
+  		cb(null,result);
   	}else if (params.xml.Event=='scancode_push') {
+  		var msgtext = params.xml;
+  		console.log("scancode_push:"+params.xml.Ticket);
+  		var result = {
+  			success: 'success'
+  		}
+  		cb(null,result);
+  	}else if (params.xml.Event=='SCAN') {
+
+  		console.log("1 SCAN:"+params.xml.Ticket);
+  		console.log("1 SCAN:"+params.xml.FromUserName);
+  		var query = new AV.Query('ShowInfo');
+		query.equalTo("wxticket", params.xml.Ticket.toString());
+		query.first({
+			success: function(showinfo) {
+				console.log("showinfo找到:"+showinfo.id);
+				var query = new AV.Query(AV.User);
+				query.equalTo("username", params.xml.FromUserName.toString());  
+				query.first({
+				  success: function(fuser) {
+				  	console.log("fuser找到:"+fuser.id);
+				  	var query = new AV.Query('GetInfo');
+				  	query.equalTo("guser", fuser);
+				  	query.equalTo("info", showinfo);
+				  	query.find({
+				  		success:function(getinfo){
+				  			
+				  			if (getinfo.length) {
+				  				console.log("已经有了："+getinfo.length);
+				  				var msgtext = "扫描成功,已经存在："+fuser.id+' '+showinfo.id;
+							    		receiveMessage(params,msgtext,cb);
+				  			} else{
+				  				console.log("还没有： "+getinfo.length);
+				  				var getinfo = new AV.Object("GetInfo");
+							    getinfo.set('guser',fuser);
+							    getinfo.set('info',showinfo);
+							    getinfo.save(null,{
+							    	success:function(getinfo){
+							    		var msgtext = "扫描成功："+fuser.id+' '+showinfo.id;
+							    		receiveMessage(params,msgtext,cb);
+							    	},error:function(error,getinfo){
+							    		var msgtext = "扫描失败："+error.message;
+							    		receiveMessage(params,msgtext,cb);
+							    	}
+							    });
+				  			}
+				  		},error:function(){
+				  			console.log("查询错误 ");
+				  		}
+				  	});
+				  }
+				});	
+			},error: function(error) {
+				var msgtext = "没有找到二维码:"+error.message;
+				receiveMessage(params,msgtext,cb);
+			}
+		});
+		
+  	}else if (params.xml.Event=='VIEW') {
   		
+  		var result = {
+  			success: 'success'
+  		}
+  		cb(null,result);
   	}
   }
 }

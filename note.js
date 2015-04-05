@@ -29,18 +29,7 @@ signature: 'c76a4f533ab705e2be7c6a31fb69136ee64892ce',
 订阅 event:subscribe
 取消订阅  event:unsubscribe
 
-bug:
-request uncaughtException: Can't set headers after they are sent. Error: Can't set headers after they are sent.
-    at ServerResponse.OutgoingMessage.setHeader (http.js:689:11)
-    at ServerResponse.res.setHeader (/mnt/avos/cloud-code/node_modules/express/node_modules/connect/lib/patch.js:59:22)
-    at ServerResponse.res.set.res.header (/mnt/avos/cloud-code/node_modules/express/lib/response.js:522:10)
-    at cloud_sandbox:[production] cloud/app.js:109:9
-    at cloud_sandbox:[production] cloud/weixin.js:53:12
-    at retryHandle (/mnt/avos/data/uluru-cloud-code/repos/tww2caz3acq9idq079ltz5ys5ra57g9tekoxcw3udlj8l6ww/node_modules/wechat-api/lib/api_common.js:204:11)
-    at /mnt/avos/data/uluru-cloud-code/repos/tww2caz3acq9idq079ltz5ys5ra57g9tekoxcw3udlj8l6ww/node_modules/wechat-api/lib/util.js:18:5
-    at done (/mnt/avos/data/uluru-cloud-code/repos/tww2caz3acq9idq079ltz5ys5ra57g9tekoxcw3udlj8l6ww/node_modules/wechat-api/node_modules/urllib/lib/urllib.js:346:5)
-    at /mnt/avos/data/uluru-cloud-code/repos/tww2caz3
-    
+
     
     js: {"debug":true,"appId":"wx966a571968e8cdee","timestamp":"1427654176","nonceStr":"wuflbmmsfefxn7b","signature":"19ad75d4f7b637094e5753d437186996f3d89402","jsApiList":["onMenuShareTimeline","onMenuShareAppMessage"]}
     js: {"debug":true,"appId":"wx966a571968e8cdee","timestamp":"1427653811","nonceStr":"xakp1bh0ai7ctyb","signature":"4bbd21839ee5b70e4e3ca30b1fecdf762bf7199a","jsApiList":["onMenuShareTimeline","onMenuShareAppMessage"]}
@@ -52,36 +41,5 @@ request uncaughtException: Can't set headers after they are sent. Error: Can't s
  				"updatedAt":"2015-03-17T08:57:54.205Z"}
  
  
- 官方：{
- 	"jsapi_ticket":{"ticket":"sM4AOVdWfPE4DxkXGEs8VDAVRvGlm7OMI8RztdoCP-XgrhqmN34hVOGTCIRx66RuA1Bl3BMEdXStqjgTmE8Wsw","expireTime":1427662211896},
-	"nonceStr":"fk0s24vd9jh8h0k",
-	"timestamp":"1427655021",
-	"url":"http://xobx.avosapps.com/me",
-	"signature":"b688b1b024d5c6a4e2f9da6c19948cadab8761b8"}
- 
- 官方：{"jsapi_ticket":{"ticket":"sM4AOVdWfPE4DxkXGEs8VDAVRvGlm7OMI8RztdoCP-XgrhqmN34hVOGTCIRx66RuA1Bl3BMEdXStqjgTmE8Wsw","expireTime":1427666304861},"nonceStr":
-"s3nxc7wvc0418ao","timestamp":"1427659160","url":"http://xbox.avosapps.com/me","
-signature":"55239674f581546284aacfb07be201228aedd8d5"}
-haha:{"jsapi_ticket":{"ticket":"sM4AOVdWfPE4DxkXGEs8VDAVRvGlm7OMI8RztdoCP-Xgrhqm
-N34hVOGTCIRx66RuA1Bl3BMEdXStqjgTmE8Wsw","expireTime":1427666304861},"nonceStr":"
-khds00o9vvs7cik","timestamp":"1427659160","url":"http://xbox.avosapps.com/me","s
-ignature":"8a9ec7c6854595ab425cb27cf137c10fbe23d9ea"}
 
-官方：{"jsapi_ticket":{"ticket":"sM4AOVdWfPE4DxkXGEs8VDAVRvGlm7OMI8RztdoCP-XCxPeNJg6ynhUMy9u6hz-Qgq6PYYcfI7EA3El4IUTutw","expireTime":1427666667336},"nonceStr":
-"m4hh4ahdif4m42t","timestamp":"1427659486","url":"http://box.avosapps.com/me","s
-ignature":"c58b45c8f97486504a159bc285dcd5b659af8b0e"}
-haha:{"jsapi_ticket":{"ticket":"sM4AOVdWfPE4DxkXGEs8VDAVRvGlm7OMI8RztdoCP-XCxPeN
-Jg6ynhUMy9u6hz-Qgq6PYYcfI7EA3El4IUTutw","expireTime":1427666667336},"nonceStr":"
-52h8nrukthwd0a4","timestamp":"1427659486","url":"http://box.avosapps.com/me","si
-gnature":"bf65d3786545d878516b68e69aeb89e1c43f8ce2"}
-
-haha:{"debug":true,"appId":"wx966a571968e8cdee","timestamp":"1427659907","nonceS
-tr":"flcyd4jimm927qf","signature":"70dc5d2c8e235e083f3ccb9e483e320f5d572a4b","js
-ApiList":["onMenuShareTimeline","onMenuShareAppMessage"]}
-
- guan1:sM4AOVdWfPE4DxkXGEs8VDAVRvGlm7OMI8RztdoCP-XCxPeNJg6ynhUMy9u6hz-Qgq6PYYcfI7EA3El4IUTutw
-guan2:gm03m7h2tbhp8pv
-guan3:1427661780
-guan4:5237b08436db5dcf21b2ba6d1cb461806208ba6a
- 
  
