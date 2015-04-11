@@ -213,15 +213,15 @@ app.get('/menu', function(req, res) {
 	});
 });
 
-//app.get('/weixin', function(req, res) {
-//	console.log('1weixin req:', req.query);
-//	weixin.exec(req.query, function(err, data) {
-//		if (err) {
-//			return res.send(err.code || 500, err.message);
-//		}
-//		return res.send(data);
-//	});
-//})
+app.get('/weixin', function(req, res) {
+	console.log('1weixin req:', req.query);
+	weixin.exec(req.query, function(err, data) {
+		if (err) {
+			return res.send(err.code || 500, err.message);
+		}
+		return res.send(data);
+	});
+})
 
 app.get('/huodong', requiredAuthentication, function(req, res) {
 	
