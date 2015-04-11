@@ -5,6 +5,7 @@ var weixin = require('cloud/weixin.js');
 var js2xmlparser = require("js2xmlparser");
 var config = require('cloud/config/weixin.js');
 var https = require("https");
+var http = require("http");
 var API = require('wechat-api');
 var api = new API(config.appid, config.appsecret);
 var avosExpressCookieSession = require('avos-express-cookie-session');
@@ -12,12 +13,6 @@ var OAuth = require('wechat-oauth');
 var client = new OAuth(config.appid, config.appsecret);
 var jsSHA = require("jssha");
 
-api.getLatestToken(function(err,token){
-	if (err) {
-		console.log('weixin error:'+err);
-	}
-	console.log("app初始化"+token.accessToken);
-});
 
 // 解析微信的 xml 数据
 var xmlBodyParser = function (req, res, next) {
@@ -99,22 +94,30 @@ function wxAuthentication(req, res, next) {
         next();
     }else if(req.query.code){
     	console.log("code:"+req.query.code);
-    	client.getUserByCode(req.query.code,function(err,result){
-    		if (err) {
-    			console.log("code get user error:"+err);
-    		} else{
-    			var openid = result.openid;
-			AV.User.logIn(openid, openid, {
-				success: function(user) {
-					console.log("新登录用户 to cards:");
-					next();
-				},
-				error: function(user, averr) {
-					console.log("getusererror:"+JSON.stringify(averr));
-				}
+    	https.get('https://api.weixin.qq.com/sns/oauth2/access_token?appid='+config.appid+'&secret='+config.appsecret+'&code='+req.query.code+'&grant_type=authorization_code', function(res){
+			var str = '';
+			res.on('data', function (chunk) {
+				str += chunk;
 			});
-    		}
-    		
+			res.on('end', function () {
+				console.log("error:",JSON.parse(str).errcode);
+				if (JSON.parse(str).errcode) {
+					console.log("error:"+JSON.parse(str).errcode);
+				} else{
+					console.log("openid = "+JSON.parse(str).openid);
+	    			var openid = JSON.parse(str).openid;
+					AV.User.logIn(openid, openid, {
+						success: function(user) {
+							console.log("新登录用户 to cards:");
+							next();
+						},
+						error: function(user, averr) {
+							console.log("getusererror:"+JSON.stringify(averr));
+						}
+					});
+				}
+
+			});	
     	});
     }else {
     	console.log("不过 重新登录:"+req.url);
@@ -180,11 +183,7 @@ app.get('/hello', function(req, res) {
 	
 })
 
-app.get('/url', function(req, res) {
-	
-//	var url = client.getAuthorizeURL('http://xbox.avosapps.com/me', 'STATE', 'snsapi_base');
-//	console.log("url:"+url);
-})
+
 
 
 
@@ -214,21 +213,31 @@ app.get('/menu', function(req, res) {
 	});
 });
 
-app.get('/weixin', function(req, res) {
-	console.log('1weixin req:', req.query);
-	weixin.exec(req.query, function(err, data) {
-		if (err) {
-			return res.send(err.code || 500, err.message);
-		}
-		return res.send(data);
-	});
+//app.get('/weixin', function(req, res) {
+//	console.log('1weixin req:', req.query);
+//	weixin.exec(req.query, function(err, data) {
+//		if (err) {
+//			return res.send(err.code || 500, err.message);
+//		}
+//		return res.send(data);
+//	});
+//})
+
+app.get('/huodong', requiredAuthentication, function(req, res) {
+	
+	if (AV.User.current()) {
+			res.render('huodong');
+	}else{
+		console.log("异常！！！！");
+	}
 })
+
 
 app.get('/cards', wxAuthentication, function(req, res) {
 	
 	var nostr = createNonceStr();
 	var timstr = createTimeStamp();
-	var urlstr = 'http://xbox.avosapps.com/cards';
+	var urlstr = 'http://xbox.avosapps.com'+req.url;
 	console.log("urlstr："+urlstr);
 	if (AV.User.current()) {
 			var user =AV.User.current();
@@ -269,6 +278,7 @@ app.get('/me', wxAuthentication, function(req, res) {
 				
 				if (error) {
 					console.log("getticket error:"+error);
+					
 				} else{
 
 					var signature = calcSignature(ticket.ticket, nostr, timstr, urlstr);
@@ -286,6 +296,64 @@ app.get('/me', wxAuthentication, function(req, res) {
 	}
 		
 
+})
+
+app.get('/editinfo', requiredAuthentication, function(req, res) {
+	//ouCvVs4z85LHY7GLQidA_ILJdpKc ouCvVs164UvFVU61LcA5KbHwaVBM ouCvVs_M1ghMQUWLRDzI7FGKsnVE
+		
+	if (AV.User.current()) {
+		console.log('欢迎回来'+AV.User.current().get("nickname"));
+		api.getTicket(function(err,ticket){
+			if(err){
+				console.log("guan error:"+err);
+			}else{
+				var urlstr = 'http://xbox.avosapps.com/me?code='+req.query.code+'&state=STATE';
+				var userinfo = userinfoinit(AV.User.current());
+				var nostr = createNonceStr();
+				var timstr = createTimeStamp();
+				var signature = calcSignature(ticket.ticket, nostr, timstr, 'http://192.168.199.229:3000/user');
+				userinfo["appId"]=config.appid;
+				userinfo["timestamp"]=timstr;
+				userinfo["nonceStr"]=nostr;
+				userinfo["signature"]=signature;
+				userinfo["url"]=urlstr;
+				userinfo["ticket"]=ticket.ticket;
+				res.render('editinfo',userinfo);
+			}
+		});
+
+	} else {
+    	console.log('数据异常！');
+    }	
+})
+
+app.get('/makecard', requiredAuthentication, function(req, res) {
+	//ouCvVs4z85LHY7GLQidA_ILJdpKc ouCvVs164UvFVU61LcA5KbHwaVBM ouCvVs_M1ghMQUWLRDzI7FGKsnVE
+		
+	if (AV.User.current()) {
+		console.log('欢迎回来'+AV.User.current().get("nickname"));
+		api.getTicket(function(err,ticket){
+			if(err){
+				console.log("guan error:"+err);
+			}else{
+				var urlstr = 'http://xbox.avosapps.com/me?code='+req.query.code+'&state=STATE';
+				var userinfo = userinfoinit(AV.User.current());
+				var nostr = createNonceStr();
+				var timstr = createTimeStamp();
+				var signature = calcSignature(ticket.ticket, nostr, timstr, 'http://192.168.199.229:3000/user');
+				userinfo["appId"]=config.appid;
+				userinfo["timestamp"]=timstr;
+				userinfo["nonceStr"]=nostr;
+				userinfo["signature"]=signature;
+				userinfo["url"]=urlstr;
+				userinfo["ticket"]=ticket.ticket;
+				res.render('makecard',userinfo);
+			}
+		});
+
+	} else {
+    	console.log('数据异常！');
+    }	
 })
 	
 
@@ -335,7 +403,7 @@ app.post('/weixin', function(req, res) {
   });
 })
 
-app.post('/getmycards', function(req, res) {
+app.post('/getmycards',wxAuthentication, function(req, res) {
 	if (AV.User.current()) {
 		var user = AV.User.current();
 		var query = new AV.Query('GetInfo');
@@ -359,7 +427,7 @@ app.post('/getmycards', function(req, res) {
 })
 
 
-app.post('/update', requiredAuthentication, function(req, res) {
+app.post('/update', wxAuthentication, function(req, res) {
 	
 	if (AV.User.current()) {
 		var user = AV.User.current();
@@ -384,7 +452,7 @@ app.post('/update', requiredAuthentication, function(req, res) {
     }
 })
 
-app.post('/show', requiredAuthentication, function(req, res) {
+app.post('/show', wxAuthentication, function(req, res) {
 	
 	if (AV.User.current()) {
 		var showinfo = AV.Object.new('ShowInfo');
@@ -402,7 +470,7 @@ app.post('/show', requiredAuthentication, function(req, res) {
 	}	
 })
 
-app.post('/getmycardlist', requiredAuthentication, function(req, res) {
+app.post('/getmycardlist', wxAuthentication, function(req, res) {
 	console.log("关系开始查询");
 	if (AV.User.current()) {
 		var query = new AV.Query('ShowInfo');
@@ -417,7 +485,7 @@ app.post('/getmycardlist', requiredAuthentication, function(req, res) {
 	}
 })
 
-app.post('/getmycardinfo', requiredAuthentication, function(req, res) {
+app.post('/getmycardinfo', wxAuthentication, function(req, res) {
 //	console.log("关系card查询 ："+req.body.fuser.objectId);
 	if (AV.User.current()) {
 //		console.log("id:"+JSON.parse(req.body.list).nickname);
@@ -443,7 +511,7 @@ app.post('/getmycardinfo', requiredAuthentication, function(req, res) {
 	}
 })
 
-app.post('/sharethiscard', requiredAuthentication, function(req, res) {
+app.post('/sharethiscard', wxAuthentication, function(req, res) {
 //	console.log("aha:"+JSON.stringify(req.body));
 	var query = new AV.Query('ShowInfo');
 	query.get(req.body.objectId, {
@@ -470,21 +538,37 @@ app.post('/sharethiscard', requiredAuthentication, function(req, res) {
 			
 		}
 	});
-//	if (AV.User.current()) {
-//		api.createTmpQRCode(1000, 1800, function(err,result){
-//			
-//			if (err) {
-//				console.log("创建二维码失败");
-//			} else{
-//				console.log("得到啦："+api.showQRCodeURL(result.ticket));
-//				return res.send(api.showQRCodeURL(result.ticket));
-//				
-//				
-//			}
-//		});
-//	}else{
-//		console.log("无用户");
-//	}
+})
+
+app.post('/pingtai', wxAuthentication, function(req, res) {
+	
+//	console.log("pingt:"+req.body.list);
+	api.createTmpQRCode(1000, 1800, function(err,result){
+					if (err) {
+						console.log("创建二维码失败");
+					} else{
+//						console.log("得到啦："+api.showQRCodeURL(result.ticket));
+						var askinfo = AV.Object.new('AskInfo');
+						askinfo.set('wxticket',result.ticket);
+						var query = new AV.Query('PTInfo');
+						query.get(req.body.ptinfo, {
+						  success: function(ptinfo) {
+						    askinfo.set('ptinfo',ptinfo);
+							askinfo.save(null, {
+								success: function(askinfo) {
+									return res.send(api.showQRCodeURL(askinfo.get('wxticket')));
+								},
+								error: function(askinfo, error) {
+									console.log("ask 保存失败："+error.message);
+								}
+							});
+						  },error: function(fuser, error) {
+						    console.log("fuser 查询："+error.message);
+						  }
+						});	
+					}
+				});
+	
 	
 })
 

@@ -9,9 +9,10 @@
     <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
     <script type="text/javascript">
 			//通过config接口注入权限验证配置
+//			alert(location.href.split('#')[0]);
 //			alert("me:"+'<%= appId %>'+"  "+'<%= timestamp %>'+"  "+'<%= nonceStr %>'+"  "+'<%= signature %>'+'<%= url %>'+"  "+'<%= ticket %>');
 			wx.config({
-			    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+			    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
 			    appId: '<%= appId %>', // 必填，公众号的唯一标识
 			    timestamp: '<%= timestamp %>', // 必填，生成签名的时间戳
 			    nonceStr: '<%= nonceStr %>', // 必填，生成签名的随机串
@@ -64,7 +65,7 @@
 				</li>
 			</ul>
 		</aside>
-		<div id="editinfo" class="mui-content ">
+		<div id="editinfo" class="mui-content">
 			<ul class="mui-table-view mui-table-view-chevron">
 				<li class="mui-table-view-cell mui-collapse">
 					<a class="mui-navigate-right" href="#">身份信息</a>
@@ -74,7 +75,7 @@
 								<label>姓名</label><input type="text" name="nickname" placeholder="请输入您的姓名" value=<%= nickname %>>
 							</div>
 							<div class="mui-input-row">
-								<label>年龄</label><input type="text" name="age" placeholder="请输入您的年龄" onBlur="if(/\D/.test(this.value)){alert('请输入正确的年龄！');this.value='<%= age %>';}" value=<%= age %>>
+								<label>年龄</label><input type="number" name="age" placeholder="请输入您的年龄" onBlur="if(/\D/.test(this.value)){alert('请输入正确的年龄！');this.value='<%= age %>';}" value=<%= age %>>
 							</div>
 							<div class="mui-input-row">
 								<label>国家</label><input type="text" name="country" placeholder="请输入您的国家" value=<%= country %>>
@@ -90,7 +91,7 @@
 					<ul class="mui-table-view mui-table-view-chevron">
 						<li class="mui-table-view-cell">
 							<div class="mui-input-row">
-								<label>QQ</label><input type="text" name="QQ" placeholder="请输入您的QQ账号" value=<%= QQ %>>
+								<label>QQ</label><input type="number" name="QQ" placeholder="请输入您的QQ账号" value=<%= QQ %>>
 							</div>
 							<div class="mui-input-row">
 								<label>微博</label><input type="text" name="weibo" placeholder="请输入您的微博昵称" value=<%= weibo %>>
@@ -171,7 +172,7 @@
       		}
       		userData["userid"]='<%= userid %>';
       		$.post("/show", userData,function(data){
-      			alert('data:'+data);
+      			alert('制作成功，进入我的卡片查看:'+data);
       		});
       	}
       	var showbn = document.getElementById("showbutton");
@@ -204,6 +205,26 @@
 			e.stopPropagation();
 		}
 		
+		function keytoname(key){
+			
+			var names ={
+				'age':'年龄',
+				'QQ':'QQ',
+				'weibo':'微博',
+				'nickname':'昵称',
+				'city':'城市',
+				'MOMO':'陌陌',
+				'IDnumber':'身份证',
+				'province':'省份',
+				'country':'国家',
+				'company':'公司',
+				'headimgurl':'头像'
+			}
+			
+			var name = names[key]||key;
+			return name;
+		}
+		
 		function showinfolist(){
 //			console.log("datahaiziama :"+JSON.parse(infolistdata[this.id].list).userid);
 //			var showinfoid={"infoid":this.id};
@@ -222,12 +243,12 @@
 				for (var vk in data) {
 					var cardinfoli = document.createElement('li');
 					cardinfoli.className = "mui-table-view-cell";
-					cardinfoli.innerHTML = '<h4> '+vk+': '+data[vk]+'</h4>';
+					cardinfoli.innerHTML = '<h4> '+keytoname(vk)+': '+data[vk]+'</h4>';
 					cardinfoul.appendChild(cardinfoli);
 				}
 				var cardinfoli = document.createElement('li');
 				cardinfoli.className = "mui-table-view-cell";
-				cardinfoli.innerHTML = '<h3>点我复制连接！</h3>';
+				cardinfoli.innerHTML = '<h3>生成二维码！</h3>';
 				cardinfoli.addEventListener("tap", shareshowinfo);
 				cardinfoul.appendChild(cardinfoli);
 				document.getElementById(elid).appendChild(cardinfoul);
@@ -235,6 +256,27 @@
 		}
 		
 		function mycardlist(){
+			Date.prototype.format = function(format) {
+				var date = {
+					"M+": this.getMonth() + 1,
+					"d+": this.getDate(),
+					"h+": this.getHours(),
+					"m+": this.getMinutes(),
+					"s+": this.getSeconds(),
+					"q+": Math.floor((this.getMonth() + 3) / 3),
+					"S+": this.getMilliseconds()
+					};
+		       if (/(y+)/i.test(format)) {
+		              format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+		       }
+		       for (var k in date) {
+		              if (new RegExp("(" + k + ")").test(format)) {
+		                     format = format.replace(RegExp.$1, RegExp.$1.length == 1
+		                            ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+		              }
+		       }
+		       return format;
+			}
 			console.log("list");
 			document.getElementById("editinfo").style.display="none";
 			document.getElementById("showinfo").style.display="none";
@@ -250,7 +292,9 @@
       				cardLi.addEventListener("tap", showinfolist);
       				cardLi.className = "mui-table-view-cell mui-collapse";
       				cardLi.id = i;
-      				cardLi.innerHTML = '<a class="mui-navigate-right">'+data[i].createdAt+'</a>';
+      				var newDate = new Date();
+      				newDate.setTime(Date.parse(new Date(data[i].createdAt)));
+      				cardLi.innerHTML = '<a class="mui-navigate-right">'+newDate.format('yyyy-MM-dd hh:mm:ss')+'</a>';
 					cardUl.appendChild(cardLi);
       			}
       		});

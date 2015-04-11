@@ -12,7 +12,7 @@
 //			alert(location.href.split('#')[0])
 //			alert("me:"+'<%= appId %>'+"  "+'<%= timestamp %>'+"  "+'<%= nonceStr %>'+"  "+'<%= signature %>'+'<%= url %>'+"  "+'<%= ticket %>');
 			wx.config({
-			    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+			    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
 			    appId: '<%= appId %>', // 必填，公众号的唯一标识
 			    timestamp: '<%= timestamp %>', // 必填，生成签名的时间戳
 			    nonceStr: '<%= nonceStr %>', // 必填，生成签名的随机串
@@ -56,6 +56,26 @@
 	<script  type="text/javascript" charset="utf-8">
 		var infolistdata;
 		
+		function keytoname(key){
+			
+			var names ={
+				'age':'年龄',
+				'QQ':'QQ',
+				'weibo':'微博',
+				'nickname':'昵称',
+				'city':'城市',
+				'MOMO':'陌陌',
+				'IDnumber':'身份证',
+				'province':'省份',
+				'country':'国家',
+				'company':'公司',
+				'headimgurl':'头像'
+			}
+			
+			var name = names[key]||key;
+			return name;
+		}
+		
 		function showinfolist(){
 //			console.log("datahaiziama :"+JSON.parse(infolistdata[this.id].list).userid);
 //			var showinfoid={"infoid":this.id};
@@ -76,7 +96,7 @@
 				for (var vk in data) {
 					var cardinfoli = document.createElement('li');
 					cardinfoli.className = "mui-table-view-cell";
-					cardinfoli.innerHTML = '<h4> '+vk+': '+data[vk]+'</h4>';
+					cardinfoli.innerHTML = '<h4> '+keytoname(vk)+': '+data[vk]+'</h4>';
 					cardinfoul.appendChild(cardinfoli);
 				}
 				cardinfoul.appendChild(cardinfoli);
@@ -85,6 +105,27 @@
 		}
 		
 		$(function(){
+			Date.prototype.format = function(format) {
+				var date = {
+					"M+": this.getMonth() + 1,
+					"d+": this.getDate(),
+					"h+": this.getHours(),
+					"m+": this.getMinutes(),
+					"s+": this.getSeconds(),
+					"q+": Math.floor((this.getMonth() + 3) / 3),
+					"S+": this.getMilliseconds()
+					};
+		       if (/(y+)/i.test(format)) {
+		              format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+		       }
+		       for (var k in date) {
+		              if (new RegExp("(" + k + ")").test(format)) {
+		                     format = format.replace(RegExp.$1, RegExp.$1.length == 1
+		                            ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+		              }
+		       }
+		       return format;
+			}
 			$.post("/getmycards",function(data){
 				console.log("en:"+data.length);
       			infolistdata = {};
@@ -97,7 +138,9 @@
       				cardLi.addEventListener("tap", showinfolist);
       				cardLi.className = "mui-table-view-cell mui-collapse";
       				cardLi.id = i;
-      				cardLi.innerHTML = '<a class="mui-navigate-right">'+data[i].createdAt+'</a>';
+      				var newDate = new Date();
+      				newDate.setTime(Date.parse(new Date(data[i].createdAt)));
+      				cardLi.innerHTML = '<a class="mui-navigate-right">'+newDate.format('yyyy-MM-dd hh:mm:ss')+'</a>';
 					cardUl.appendChild(cardLi);
       			}
 			});

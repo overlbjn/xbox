@@ -5,15 +5,6 @@ var User = AV.Object.extend('_User');
 var API = require('wechat-api');
 var api = new API(config.appid, config.appsecret);
 
-api.getLatestToken(function(err,token){
-	if (err) {
-		console.log('weixin error:'+err);
-	}else{
-		console.log("weixin api初始化"+token.accessToken);
-	}	
-});
-
-
 
 
 exports.exec = function(params, cb) {
@@ -95,45 +86,107 @@ exports.exec = function(params, cb) {
 		query.equalTo("wxticket", params.xml.Ticket.toString());
 		query.first({
 			success: function(showinfo) {
-				console.log("showinfo找到:"+showinfo.id);
-				var query = new AV.Query(AV.User);
-				query.equalTo("username", params.xml.FromUserName.toString());  
-				query.first({
-				  success: function(fuser) {
-				  	console.log("fuser找到:"+fuser.id);
-				  	var query = new AV.Query('GetInfo');
-				  	query.equalTo("guser", fuser);
-				  	query.equalTo("info", showinfo);
-				  	query.find({
-				  		success:function(getinfo){
-				  			
-				  			if (getinfo.length) {
-				  				console.log("已经有了："+getinfo.length);
-				  				var msgtext = "扫描成功,已经存在："+fuser.id+' '+showinfo.id;
-							    		receiveMessage(params,msgtext,cb);
-				  			} else{
-				  				console.log("还没有： "+getinfo.length);
-				  				var getinfo = new AV.Object("GetInfo");
-							    getinfo.set('guser',fuser);
-							    getinfo.set('info',showinfo);
-							    getinfo.save(null,{
-							    	success:function(getinfo){
-							    		var msgtext = "扫描成功："+fuser.id+' '+showinfo.id;
-							    		receiveMessage(params,msgtext,cb);
-							    	},error:function(error,getinfo){
-							    		var msgtext = "扫描失败："+error.message;
-							    		receiveMessage(params,msgtext,cb);
-							    	}
-							    });
-				  			}
-				  		},error:function(){
-				  			console.log("查询错误 ");
-				  		}
-				  	});
-				  }
-				});	
+				console.log("shoinfo 结果："+showinfo);
+				if (showinfo) {
+					console.log("showinfo找到:"+showinfo.id);
+					var query = new AV.Query(AV.User);
+					query.equalTo("username", params.xml.FromUserName.toString());  
+					query.first({
+					  success: function(fuser) {
+					  	console.log("fuser找到:"+fuser.id);
+					  	var query = new AV.Query('GetInfo');
+					  	query.equalTo("guser", fuser);
+					  	query.equalTo("info", showinfo);
+					  	query.find({
+					  		success:function(getinfo){
+					  			
+					  			if (getinfo.length) {
+					  				console.log("已经有了："+getinfo.length);
+					  				var msgtext = "扫描成功,已经存在："+fuser.id+' '+showinfo.id;
+								    		receiveMessage(params,msgtext,cb);
+					  			} else{
+					  				console.log("还没有： "+getinfo.length);
+					  				var getinfo = new AV.Object("GetInfo");
+								    getinfo.set('guser',fuser);
+								    getinfo.set('info',showinfo);
+								    getinfo.save(null,{
+								    	success:function(getinfo){
+								    		var msgtext = "扫描成功，点击Mycards查看吧！";
+								    		receiveMessage(params,msgtext,cb);
+								    	},error:function(error){
+								    		var msgtext = "扫描失败："+error.message;
+								    		receiveMessage(params,msgtext,cb);
+								    	}
+								    });
+					  			}
+					  		},error:function(error){
+					  			var msgtext = "查询失败："+error.message;
+								receiveMessage(params,msgtext,cb);
+					  		}
+					  	});
+					  }
+					});	
+				} else{
+					var queryPT = new AV.Query('AskInfo');
+					queryPT.include("ptinfo");
+					queryPT.equalTo("wxticket", params.xml.Ticket.toString());
+					queryPT.first({
+						success:function(askinfo){
+							if (askinfo.id) {
+								var query = new AV.Query(AV.User);
+								query.equalTo("username", params.xml.FromUserName.toString());  
+								query.first({
+								  success: function(fuser) {
+								  	console.log("fuser找到:"+fuser.id);
+								  	var PTquery = new AV.Query('PTShowInfo');
+								  	PTquery.equalTo("ptinfo", askinfo.get('ptinfo')); 
+								  	PTquery.equalTo("fuser", fuser); 
+								  	PTquery.find({
+								  		success:function(ptshowinfos){
+								  			if (ptshowinfos.length) {
+								  				var msgtext = "您已成功报名，请勿重复扫描！";
+								    			receiveMessage(params,msgtext,cb);
+								  			} else{
+								  				var ptshowinfo = new AV.Object('PTShowInfo');
+								  				ptshowinfo.set('fuser',fuser);
+								  				ptshowinfo.set('ptinfo',askinfo.get('ptinfo'));
+								  				ptshowinfo.save(null,{
+								  					success:function(ptshowinfo){
+								  						var ptgetinfo = new AV.Object('PTGetInfo');
+								  						ptgetinfo.set('guser',askinfo.get('ptinfo').get('fuser'));
+								  						ptgetinfo.set('ptshowinfo',ptshowinfo);
+								  						ptgetinfo.save(null,{
+								  							success:function(ptgetinfo){
+								  								var msgtext = "报名成功！";
+																receiveMessage(params,msgtext,cb);
+								  							},error:function(error){
+								  								console.log("ptgetinfo保存失败"+error.message);
+								  								var msgtext = "报名失败："+error.message;
+																receiveMessage(params,msgtext,cb);
+								  							}
+								  						});
+								  					},error:function(error){
+								  						console.log("ptshowinfo 保存失败："+error.message);
+								  					}
+								  				});
+								  			}
+								  		},error:function(error){
+								  			console.log("ptshowinfos查询失败"+error.message);
+								  		}
+								  	});
+								  },error:function(error){
+								  	console.log("fuser 查询失败："+error.message);
+								  }
+								});
+							}
+						},error:function(error){
+							var msgtext = "查询失败："+error.message;
+							receiveMessage(params,msgtext,cb);
+						}
+					});
+				}
 			},error: function(error) {
-				var msgtext = "没有找到二维码:"+error.message;
+				var msgtext = "扫描二维码错误:"+error.message;
 				receiveMessage(params,msgtext,cb);
 			}
 		});
